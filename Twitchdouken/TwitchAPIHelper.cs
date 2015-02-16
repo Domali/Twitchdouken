@@ -50,6 +50,7 @@ namespace Twitchdouken
             {
                 Console.WriteLine(subscriber.name);
             }
+            return;
         }
 
         private List<Subscriber> getRecentSubscribers()
@@ -130,6 +131,7 @@ namespace Twitchdouken
                     this.new_subscriber_queue.Add(subscriber);
                 }
             }
+            return;
         }
 
         private List<Follower> getRecentFollowers()
@@ -187,6 +189,7 @@ namespace Twitchdouken
         {
             List<Follower> follower_list = this.getAllFollowers();
             this.follower_list = follower_list;
+            return;
         }
 
         private void findNewFollowers()
@@ -200,6 +203,7 @@ namespace Twitchdouken
                     this.new_follower_queue.Add(follower);                
                 }
             }
+            return;
         }
 
         public void printAllFollowers()
@@ -208,6 +212,7 @@ namespace Twitchdouken
             {
                 Console.WriteLine(follower.name);
             }
+            return;
         }
         
         public void printRecentFollowers()
@@ -216,6 +221,7 @@ namespace Twitchdouken
             {
                 Console.WriteLine(follower.name);
             }
+            return;
         }
 
         private void saveFollowers()
@@ -227,6 +233,7 @@ namespace Twitchdouken
                     file.WriteLine(follower.name);
                 }
             }
+            return;
         }
 
         private void saveSubscribers()
@@ -238,6 +245,7 @@ namespace Twitchdouken
                     file.WriteLine(subscriber.name);
                 }
             }
+            return;
         }
 
         private string PollAPI(string api_request)

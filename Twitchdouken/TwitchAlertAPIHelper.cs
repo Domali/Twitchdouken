@@ -85,6 +85,7 @@ namespace Twitchdouken
                     this.new_donation_queue.Add(donation);
                 }
             }
+            return;
         }
     }
 
