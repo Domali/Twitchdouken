@@ -23,7 +23,9 @@ namespace Twitchdouken
         private string follower_file;
         private string subscriber_file;
         private List<Follower> follower_list;
+        private List<Follower> new_follower_queue;
         private List<Subscriber> subscriber_list;
+        private List<Subscriber> new_subscriber_queue;
 
         public TwitchAPIHelper(string channel_name, string client_id, string sub_access_token)
         {
@@ -33,6 +35,8 @@ namespace Twitchdouken
             this.channel_name = channel_name;
             this.client_id = client_id;
             this.sub_access_token = sub_access_token;
+            this.new_follower_queue = new List<Follower>();
+            this.new_subscriber_queue = new List<Subscriber>();
             //Following files are obviously just placeholders for now
             //Maybe even look into using a database for this stuff
             this.follower_file = @"C:\Users\Sean\Desktop\current_followers.data";
@@ -115,6 +119,19 @@ namespace Twitchdouken
             return;
         }
 
+        private void findNewSubscribers()
+        {
+            List<Subscriber> new_subscriber_list = this.getRecentSubscribers();
+            foreach (Subscriber subscriber in new_subscriber_list)
+            {
+                bool found = this.subscriber_list.Any(x => x.name.ToLower() == subscriber.name.ToLower());
+                if (!found)
+                {
+                    this.new_subscriber_queue.Add(subscriber);
+                }
+            }
+        }
+
         private List<Follower> getRecentFollowers()
         {
             string api_request = this.follower_api + "?direction=DESC&limit=100";
@@ -170,7 +187,19 @@ namespace Twitchdouken
         {
             List<Follower> follower_list = this.getAllFollowers();
             this.follower_list = follower_list;
-            return;
+        }
+
+        private void findNewFollowers()
+        {
+            List<Follower> new_follower_list = this.getRecentFollowers();
+            foreach (Follower follower in new_follower_list)
+            {
+                bool found = this.follower_list.Any(x => x.name.ToLower() == follower.name.ToLower());
+                if (!found)
+                {
+                    this.new_follower_queue.Add(follower);                
+                }
+            }
         }
 
         public void printAllFollowers()

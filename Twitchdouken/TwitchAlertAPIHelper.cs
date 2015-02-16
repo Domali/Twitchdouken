@@ -15,11 +15,13 @@ namespace Twitchdouken
         private string ta_api;
         private string ta_access_token;
         private List<Donation> donation_list;
+        private List<Donation> new_donation_queue;
 
         public TwitchAlertAPIHelper(string ta_access_token)
         {
             this.ta_api = "http://www.twitchalerts.com/api/donations?access_token=";
             this.ta_access_token = ta_access_token;
+            this.new_donation_queue = new List<Donation>();
             this.syncDonationList();
         }
 
@@ -69,6 +71,20 @@ namespace Twitchdouken
                 donation_list.Add(donation);
             }
             return donation_list;
+        }
+
+        private void findNewDonations()
+        {
+
+            List<Donation> new_donation_list = this.getDonations();
+            foreach (Donation donation in new_donation_list)
+            {
+                bool found = this.donation_list.Any(x => x.id == donation.id);
+                if (!found)
+                {
+                    this.new_donation_queue.Add(donation);
+                }
+            }
         }
     }
 
