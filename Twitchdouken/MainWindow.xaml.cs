@@ -23,6 +23,19 @@ namespace Twitchdouken
         public MainWindow()
         {
             InitializeComponent();
+            /* example code for subscriber checking
+            string channel_name = "domalix";
+            string client_id = "qp3ucacbwu3thy6015demf8r8fn43ht";
+            string oauth_token = "63zypnqeg3edq0xgyza99mrrlpass6";
+            TwitchAPIHelper twitchHelper = new TwitchAPIHelper(channel_name, client_id, oauth_token);
+            twitchHelper.syncSubscriberList();
+            twitchHelper.printAllSubscribers();*/
+
+            /*example code for twitchalert access - this is my access token :)
+            string ta_acccess_token = "442DC86CCD9855FC";
+            TwitchAlertAPIHelper taHelper = new TwitchAlertAPIHelper(ta_acccess_token);
+            taHelper.printDonations();
+             */
         }
     }
 }

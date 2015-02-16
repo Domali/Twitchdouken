@@ -20,6 +20,8 @@ namespace Twitchdouken
         private string sub_access_token;
         private int total_followers;
         private int total_subscribers;
+        private string follower_file;
+        private string subscriber_file;
         private List<Follower> follower_list;
         private List<Subscriber> subscriber_list;
 
@@ -31,6 +33,10 @@ namespace Twitchdouken
             this.channel_name = channel_name;
             this.client_id = client_id;
             this.sub_access_token = sub_access_token;
+            //Following files are obviously just placeholders for now
+            //Maybe even look into using a database for this stuff
+            this.follower_file = @"C:\Users\Sean\Desktop\current_followers.data";
+            this.subscriber_file = @"C:\Users\Sean\Desktop\current_subscribers.data";
         }
 
         public void printRecentSubscribers()
@@ -173,15 +179,35 @@ namespace Twitchdouken
             {
                 Console.WriteLine(follower.name);
             }
-            return;
         }
-
+        
         public void printRecentFollowers()
         {
-            List<Follower> follower_list = this.getRecentFollowers();
             foreach (Follower follower in follower_list)
             {
                 Console.WriteLine(follower.name);
+            }
+        }
+
+        private void saveFollowers()
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(this.follower_file))
+            {
+                foreach (Follower follower in this.follower_list)
+                {
+                    file.WriteLine(follower.name);
+                }
+            }
+        }
+
+        private void saveSubscribers()
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(this.subscriber_file))
+            {
+                foreach (Subscriber subscriber in this.subscriber_list)
+                {
+                    file.WriteLine(subscriber.name);
+                }
             }
         }
 
