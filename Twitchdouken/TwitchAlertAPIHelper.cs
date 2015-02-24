@@ -42,19 +42,6 @@ namespace Twitchdouken
             return;
         }
 
-        public void printDonations()
-        {
-            foreach (Donation donation in this.donation_list)
-            {
-                Console.WriteLine(donation.name);
-                Console.WriteLine(donation.comment);
-                Console.WriteLine(donation.amount);
-                Console.WriteLine(donation.id);
-                Console.WriteLine();
-            }
-            return;
-        }
-
         private List<Donation> getDonations()
         {
             List<Donation> donation_list = new List<Donation>();

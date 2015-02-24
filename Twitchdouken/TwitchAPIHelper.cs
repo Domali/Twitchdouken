@@ -22,14 +22,22 @@ namespace Twitchdouken
         private int total_subscribers;
         private string follower_file;
         private string subscriber_file;
+        private string follow_update_time;
+        private string subscriber_update_time;
+        private bool update_followers;
+        private bool update_subscribers;
+        private bool run_thread;
+        private int update_sleep_time;
         private List<Follower> follower_list;
         private List<Follower> new_follower_queue;
         private List<Subscriber> subscriber_list;
         private List<Subscriber> new_subscriber_queue;
 
         public TwitchAPIHelper(string channel_name, string client_id, string sub_access_token)
-        {
+        {            
             this.twitch_api = "https://api.twitch.tv/kraken/";
+            this.follow_update_time = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+            this.subscriber_update_time = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
             this.follower_api = "channels/" + channel_name + "/follows";
             this.subscriber_api = "channels/" + channel_name + "/subscriptions";
             this.channel_name = channel_name;
@@ -37,20 +45,90 @@ namespace Twitchdouken
             this.sub_access_token = sub_access_token;
             this.new_follower_queue = new List<Follower>();
             this.new_subscriber_queue = new List<Subscriber>();
+            this.update_sleep_time = 90 * 1000;
             //Following files are obviously just placeholders for now
             //Maybe even look into using a database for this stuff
             this.follower_file = @"C:\Users\Sean\Desktop\current_followers.data";
             this.subscriber_file = @"C:\Users\Sean\Desktop\current_subscribers.data";
         }
 
-        public void printRecentSubscribers()
+        public void runAsThread()
         {
-            List<Subscriber> subscriber_list = this.getRecentSubscribers();
-            foreach (Subscriber subscriber in subscriber_list)
+            this.run_thread = true;
+            this.update_followers = true;
+            this.update_subscribers = true;
+            this.syncFollowerList();
+            this.syncSubscriberList();
+            while (this.run_thread)
             {
-                Console.WriteLine(subscriber.name);
+                Console.WriteLine("Another loop.");
+                if (this.update_followers)
+                {
+                    this.findNewFollowers();
+                }
+                if (this.update_subscribers)
+                {
+                    this.findNewSubscribers();
+                }
+                System.Threading.Thread.Sleep(this.update_sleep_time);
             }
             return;
+        }
+
+        public List<Follower> getFollowerQueue()
+        {
+            //Returns the follow queue when requested and then empties it
+            List<Follower> copy;
+            lock(this.new_follower_queue)
+            {
+                copy = new List<Follower>(this.new_follower_queue);
+                this.new_follower_queue.Clear();
+            }
+            return copy;
+        }
+
+        public string getFollowUpdateTime()
+        {
+            return this.follow_update_time;
+        }
+
+        public string getSubscriberUpdateTime()
+        {
+            return this.subscriber_update_time;
+        }
+
+        public List<Subscriber> getSubscriberQueue()
+        {
+            //Returns the subscriber queue when requested and then empties it
+            List<Subscriber> copy;
+            lock(this.new_subscriber_queue)
+            {
+                copy = new List<Subscriber>(this.new_subscriber_queue);
+                this.new_subscriber_queue.Clear();
+            }
+            return copy;
+        }
+
+        private void queueFollowers(List<Follower> list)
+        {
+            lock(this.new_follower_queue)
+            {
+                this.new_follower_queue.AddRange(list);
+            }
+            return;
+        }
+
+        private void queueSubscribers(List<Subscriber> list)
+        {
+            lock(this.new_subscriber_queue)
+            {
+                this.new_subscriber_queue.AddRange(list);
+            }
+            return;
+        }
+        public List<Follower> getFollowerList()
+        {
+            return this.follower_list;
         }
 
         private List<Subscriber> getRecentSubscribers()
@@ -84,7 +162,6 @@ namespace Twitchdouken
 
         private List<Subscriber> getAllSubscribers()
         {
-
             List<Subscriber> subscribers = new List<Subscriber>();
             this.updateSubscriberTotal();
             int end_offset = this.total_subscribers;
@@ -104,39 +181,28 @@ namespace Twitchdouken
             return;
 
         }
-        public void printSubscriberTotal()
-        {
-            this.updateSubscriberTotal();
-            Console.WriteLine(this.total_subscribers);
-            return;
-        }
-
-        public void printAllSubscribers()
-        {
-            foreach (Subscriber subscriber in this.subscriber_list)
-            {
-                Console.WriteLine(subscriber.name);
-            }
-            return;
-        }
 
         private void findNewSubscribers()
         {
-            List<Subscriber> new_subscriber_list = this.getRecentSubscribers();
-            foreach (Subscriber subscriber in new_subscriber_list)
+            List<Subscriber> subscriber_list = this.getRecentSubscribers();
+            List<Subscriber> new_subscriber_list = new List<Subscriber>();
+            this.subscriber_update_time = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+            foreach (Subscriber subscriber in subscriber_list)
             {
                 bool found = this.subscriber_list.Any(x => x.name.ToLower() == subscriber.name.ToLower());
                 if (!found)
                 {
-                    this.new_subscriber_queue.Add(subscriber);
+                    new_subscriber_list.Add(subscriber);
                 }
             }
+            this.subscriber_list.AddRange(new_subscriber_list);
+            this.queueSubscribers(new_subscriber_list);
             return;
         }
 
         private List<Follower> getRecentFollowers()
         {
-            string api_request = this.follower_api + "?direction=DESC&limit=100";
+            string api_request = this.follower_api + "?direction=DESC&limit=100&offset=0";
             string follower_data = this.PollAPI(api_request);
             return this.parseFollowers(follower_data);
         }
@@ -163,21 +229,14 @@ namespace Twitchdouken
             return;
         }
 
-        public void printFollowerTotal()
-        {
-            this.updateFollowerTotal();
-            Console.WriteLine(this.total_followers);
-            return;
-        }
-
         private List<Follower> getAllFollowers()
         {
             List<Follower> followers = new List<Follower>();
             this.updateFollowerTotal();
-            int end_offset = this.total_followers;
+            //Block this out to only get the first 200 until twitch fixes their api.
+            int end_offset = 200;//this.total_followers;
             for (int offset = 0; offset <= end_offset; offset += 100)
             {
-                Console.WriteLine(offset.ToString());
                 string api_request = this.follower_api + "?direction=DESC&limit=100&offset=" + offset.ToString();
                 string data = this.PollAPI(api_request);
                 followers.AddRange(this.parseFollowers(data));
@@ -194,33 +253,19 @@ namespace Twitchdouken
 
         private void findNewFollowers()
         {
-            List<Follower> new_follower_list = this.getRecentFollowers();
-            foreach (Follower follower in new_follower_list)
+            List<Follower> follower_list = this.getRecentFollowers();
+            List<Follower> new_follower_list = new List<Follower>();
+            this.follow_update_time = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+            foreach (Follower follower in follower_list)
             {
                 bool found = this.follower_list.Any(x => x.name.ToLower() == follower.name.ToLower());
                 if (!found)
                 {
-                    this.new_follower_queue.Add(follower);                
+                    new_follower_list.Add(follower);
                 }
             }
-            return;
-        }
-
-        public void printAllFollowers()
-        {
-            foreach (Follower follower in this.follower_list)
-            {
-                Console.WriteLine(follower.name);
-            }
-            return;
-        }
-        
-        public void printRecentFollowers()
-        {
-            foreach (Follower follower in follower_list)
-            {
-                Console.WriteLine(follower.name);
-            }
+            this.follower_list.AddRange(new_follower_list);
+            this.queueFollowers(new_follower_list);
             return;
         }
 
