@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Twitchdouken")]
+[assembly: AssemblyTitle("WindowsFormsApplication1")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Twitchdouken")]
+[assembly: AssemblyProduct("WindowsFormsApplication1")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d0436e90-27a3-4fd6-9180-921df0dfc3c7")]
+[assembly: Guid("f939b89d-30f3-44c1-8e3d-71f0561de475")]
 
 // Version information for an assembly consists of the following four values:
 //

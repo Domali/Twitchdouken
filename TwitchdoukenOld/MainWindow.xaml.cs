@@ -33,13 +33,15 @@ namespace Twitchdouken
             string oauth_token = "63zypnqeg3edq0xgyza99mrrlpass6";
             this.twitchHelper = new TwitchAPIHelper(channel_name, client_id, oauth_token);
             Thread t = new Thread(this.twitchHelper.runAsThread);
-            t.Start();
+            //t.Start();
+            //wb.Navigate(@"C:\Users\Sean\Desktop\pen\pen\penguin_slide.swf?var1=Domalix");
             //example code for twitchalert access - this is my access token :)
             //string ta_acccess_token = "442DC86CCD9855FC";
             //TwitchAlertAPIHelper taHelper = new TwitchAlertAPIHelper(ta_acccess_token);
             //*/
 
             UIUpdaterTimer.Start();
+            TwitchIRCHelper ircHelper = new TwitchIRCHelper("domalix", "oauth:s4wdudbbkva7qa3ul3dqeh6nc6pw9j7");
             /*twitchHelper.syncFollowerList();
             List<Follower> list = twitchHelper.getFollowerList();
             foreach (Follower follower in list)
