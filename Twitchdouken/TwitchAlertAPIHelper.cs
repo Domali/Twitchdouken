@@ -16,26 +16,85 @@ namespace Twitchdouken
         private string ta_access_token;
         private List<Donation> donation_list;
         private List<Donation> new_donation_queue;
+        private bool run_thread = false;
+        private bool update_donations;
+        private int update_sleep_time;
 
         public TwitchAlertAPIHelper(string ta_access_token)
         {
             this.ta_api = "http://www.twitchalerts.com/api/donations?access_token=";
             this.ta_access_token = ta_access_token;
             this.new_donation_queue = new List<Donation>();
+            this.update_sleep_time = 30 * 1000;
             this.syncDonationList();
         }
 
 
         private string PollAPI()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.ta_api + this.ta_access_token);
-            WebResponse response = request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(dataStream);
-            string responseFromServer = reader.ReadToEnd();
+            
+            bool keepTrying = true;
+            string responseFromServer = "";
+            while (keepTrying)
+            {
+                try
+                {
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.ta_api + this.ta_access_token);
+                    WebResponse response = request.GetResponse();
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    responseFromServer = reader.ReadToEnd();
+                    keepTrying = false;
+                }
+                catch
+                {
+                    Console.WriteLine("Webrequest failed, waiting and trying again.");
+                    System.Threading.Thread.Sleep(4000);
+                }
+            }
             return responseFromServer;
         }
 
+        public void runAsThread()
+        {
+            this.run_thread = true;
+            this.update_donations = true;
+            this.syncDonationList();
+            while (this.run_thread)
+            {
+                if(this.update_donations)
+                {
+                    this.findNewDonations();
+                }
+                System.Threading.Thread.Sleep(this.update_sleep_time);
+            }
+            return;
+        }
+
+        public bool newDonationCheck()
+        {
+            return this.new_donation_queue.Any();
+        }
+
+        public Donation getDonation()
+        {
+            Donation donation;
+            lock(this.new_donation_queue)
+            {
+                
+                donation = this.new_donation_queue.ElementAt(0);
+                this.new_donation_queue.RemoveAt(0);
+            }
+            return donation;
+        }
+        
+        private void  queueDonation(Donation donation)
+        {
+            lock(this.new_donation_queue)
+            {
+                this.new_donation_queue.Add(donation); 
+            }
+        }
         private void syncDonationList()
         {
             this.donation_list = this.getDonations();
@@ -69,7 +128,8 @@ namespace Twitchdouken
                 bool found = this.donation_list.Any(x => x.id == donation.id);
                 if (!found)
                 {
-                    this.new_donation_queue.Add(donation);
+                    this.donation_list.Add(donation);
+                    this.queueDonation(donation);
                 }
             }
             return;

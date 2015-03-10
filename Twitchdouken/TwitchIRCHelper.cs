@@ -10,10 +10,17 @@ namespace Twitchdouken
 {
     class TwitchIRCHelper
     {
-        private TwitchIrcClient client;
+        private static TwitchIrcClient client;
+        private static string channel_name;
+        private static List<Host> new_host_queue;
+        private static List<Subscriber> new_subscriber_queue;
+
         public TwitchIRCHelper(string username, string password)
         {
+            new_host_queue = new List<Host>();
+            new_subscriber_queue = new List<Subscriber>();
             string server = "irc.twitch.tv";
+            channel_name = "#" + username;
             client = new IrcDotNet.TwitchIrcClient();
             client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
             client.Disconnected += IrcClient_Disconnected;
@@ -37,13 +44,13 @@ namespace Twitchdouken
                         // Not being able to connect to the server.
                     }
                 }
-                Console.Out.WriteLine("Now connected to '{0}'.", server);
                 if (!registeredEvent.Wait(10000))
                 {
                     // If Registration fails
                 }
             }
-                
+            client.Channels.Join(channel_name);
+            client.SendRawMessage("twitchclient 3");       
         }
 
         private static void IrcClient_Registered(object sender, EventArgs e)
@@ -65,7 +72,6 @@ namespace Twitchdouken
             e.Channel.MessageReceived -= IrcClient_Channel_MessageReceived;
             e.Channel.NoticeReceived -= IrcClient_Channel_NoticeReceived;
 
-            Console.WriteLine("You left the channel {0}.", e.Channel.Name);
         }
 
         private static void IrcClient_LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
@@ -76,62 +82,60 @@ namespace Twitchdouken
             e.Channel.UserLeft += IrcClient_Channel_UserLeft;
             e.Channel.MessageReceived += IrcClient_Channel_MessageReceived;
             e.Channel.NoticeReceived += IrcClient_Channel_NoticeReceived;
-
-            Console.WriteLine("You joined the channel {0}.", e.Channel.Name);
         }
 
         private static void IrcClient_Channel_NoticeReceived(object sender, IrcMessageEventArgs e)
         {
             var channel = (IrcChannel)sender;
-
-            Console.WriteLine("[{0}] Notice: {1}.", channel.Name, e.Text);
         }
 
         private static void IrcClient_Channel_MessageReceived(object sender, IrcMessageEventArgs e)
         {
             var channel = (IrcChannel)sender;
-            if (e.Source is IrcUser)
+            if(channel.Name.ToLower() == channel_name && e.Source.Name.ToLower() == "twitchnotify")
             {
-                // Read message.
-                Console.WriteLine("[{0}]({1}): {2}.", channel.Name, e.Source.Name, e.Text);
-            }
-            else
-            {
-                Console.WriteLine("[{0}]({1}) Message: {2}.", channel.Name, e.Source.Name, e.Text);
+                string temp_string = e.Text;
+                string[] sArray = temp_string.Split(new Char[] { ' ' });
+                if(sArray.Length >=5 && sArray[4] == "months" )
+                {
+                    Subscriber sub = new Subscriber();
+                    sub.name = sArray[0];
+                    sub.months = sArray[3];
+                    queueSubscriber(sub);
+                }
             }
         }
 
         private static void IrcClient_Channel_UserLeft(object sender, IrcChannelUserEventArgs e)
         {
             var channel = (IrcChannel)sender;
-            Console.WriteLine("[{0}] User {1} left the channel.", channel.Name, e.ChannelUser.User.NickName);
         }
 
         private static void IrcClient_Channel_UserJoined(object sender, IrcChannelUserEventArgs e)
         {
             var channel = (IrcChannel)sender;
-            Console.WriteLine("[{0}] User {1} joined the channel.", channel.Name, e.ChannelUser.User.NickName);
         }
 
         private static void IrcClient_LocalUser_MessageReceived(object sender, IrcMessageEventArgs e)
         {
             var localUser = (IrcLocalUser)sender;
-
-            if (e.Source is IrcUser)
+            if (e.Source is IrcUser && e.Source.Name.ToLower() == "jtv")
             {
-                // Read message.
-                Console.WriteLine("({0}): {1}.", e.Source.Name, e.Text);
-            }
-            else
-            {
-                Console.WriteLine("({0}) Message: {1}.", e.Source.Name, e.Text);
-            }
+                string temp_string = e.Text;
+                string[] sArray = temp_string.Split(new Char[]{' '});
+                if(sArray.Length >= 7 && sArray[3] == "hosting")
+                {
+                    Host host = new Host();
+                    host.name = sArray[0];
+                    host.viewers = sArray[6];
+                    queueHost(host);
+                }
+            }   
         }
 
         private static void IrcClient_LocalUser_NoticeReceived(object sender, IrcMessageEventArgs e)
         {
             var localUser = (IrcLocalUser)sender;
-            Console.WriteLine("Notice: {0}.", e.Text);
         }
 
         private static void IrcClient_Disconnected(object sender, EventArgs e)
@@ -142,8 +146,60 @@ namespace Twitchdouken
         private static void IrcClient_Connected(object sender, EventArgs e)
         {
             var client = (IrcClient)sender;
-            client.Channels.Join("#gamej06");
-            client.SendRawMessage("twitchclient 3");
         }
+
+        private static void queueHost(Host host)
+        {
+            lock(new_host_queue)
+            {
+                new_host_queue.Add(host);
+            }
+        }
+
+        private static void queueSubscriber(Subscriber subscriber)
+        {
+            lock (new_subscriber_queue)
+            {
+                new_subscriber_queue.Add(subscriber);
+            }
+        }
+
+        public Subscriber getSubscriber()
+        {
+            Subscriber sub;
+            lock (new_subscriber_queue)
+            {
+                sub = new_subscriber_queue.ElementAt(0);
+                new_subscriber_queue.RemoveAt(0);
+            }
+            return sub;
+        }
+
+        public Host getHost()
+        {
+            Host host;
+            lock(new_host_queue)
+            {
+                host = new_host_queue.ElementAt(0);
+                new_host_queue.RemoveAt(0);
+            }
+            return host;
+        }
+
+        public bool newHostCheck()
+        {
+            return new_host_queue.Any();
+        }
+
+        public bool newSubscriberCheck()
+        {
+            return new_subscriber_queue.Any();
+        }
+
+    }
+    public struct Host
+    {
+        public string name;
+        public string viewers;
     }
 }

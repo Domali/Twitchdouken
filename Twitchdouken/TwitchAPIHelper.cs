@@ -32,9 +32,10 @@ namespace Twitchdouken
         private List<Follower> new_follower_queue;
         private List<Subscriber> subscriber_list;
         private List<Subscriber> new_subscriber_queue;
-
+        private Random rand;
         public TwitchAPIHelper(string channel_name, string client_id, string sub_access_token)
-        {            
+        {
+            rand = new Random();
             this.twitch_api = "https://api.twitch.tv/kraken/";
             this.follow_update_time = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
             this.subscriber_update_time = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
@@ -45,7 +46,7 @@ namespace Twitchdouken
             this.sub_access_token = sub_access_token;
             this.new_follower_queue = new List<Follower>();
             this.new_subscriber_queue = new List<Subscriber>();
-            this.update_sleep_time = 90 * 1000;
+            this.update_sleep_time = 30 * 1000;
             //Following files are obviously just placeholders for now
             //Maybe even look into using a database for this stuff
             this.follower_file = @"C:\Users\Sean\Desktop\current_followers.data";
@@ -61,7 +62,6 @@ namespace Twitchdouken
             this.syncSubscriberList();
             while (this.run_thread)
             {
-                Console.WriteLine("Another loop.");
                 if (this.update_followers)
                 {
                     this.findNewFollowers();
@@ -73,6 +73,16 @@ namespace Twitchdouken
                 System.Threading.Thread.Sleep(this.update_sleep_time);
             }
             return;
+        }
+
+        public bool newFollowerCheck()
+        {
+            return this.new_follower_queue.Any();
+        }
+
+        public bool newSubscriberCheck()
+        {
+            return this.new_subscriber_queue.Any();
         }
 
         public List<Follower> getFollowerQueue()
@@ -97,16 +107,16 @@ namespace Twitchdouken
             return this.subscriber_update_time;
         }
 
-        public List<Subscriber> getSubscriberQueue()
+        public Subscriber getSubscriber()
         {
             //Returns the subscriber queue when requested and then empties it
-            List<Subscriber> copy;
+            Subscriber sub;
             lock(this.new_subscriber_queue)
             {
-                copy = new List<Subscriber>(this.new_subscriber_queue);
-                this.new_subscriber_queue.Clear();
+                sub = this.new_subscriber_queue.ElementAt(0);
+                this.new_subscriber_queue.RemoveAt(0);
             }
-            return copy;
+            return sub;
         }
 
         private void queueFollowers(List<Follower> list)
@@ -295,14 +305,30 @@ namespace Twitchdouken
 
         private string PollAPI(string api_request)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.twitch_api + api_request);
-            request.Accept = "application/vnd.twitchtv.v3+json";
-            request.Headers.Add("Authorization", "OAuth " + this.sub_access_token);
-            request.Headers.Add("Client-ID", this.client_id);
-            WebResponse response = request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(dataStream);
-            string responseFromServer = reader.ReadToEnd();
+            bool keepTrying = true;
+            string responseFromServer = "";
+            
+            while (keepTrying)
+            {
+                try
+                {
+                    string random_string = "&" + this.rand.Next(1, 99999999).ToString();
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.twitch_api + api_request + random_string);
+                    request.Accept = "application/vnd.twitchtv.v3+json";
+                    request.Headers.Add("Authorization", "OAuth " + this.sub_access_token);
+                    request.Headers.Add("Client-ID", this.client_id);
+                    WebResponse response = request.GetResponse();
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    responseFromServer = reader.ReadToEnd();
+                    keepTrying = false;
+                }
+                catch
+                {
+                    Console.WriteLine("Webrequest failed, waiting and trying again.");
+                    System.Threading.Thread.Sleep(4000);
+                }
+            }
             return responseFromServer;
         }
     }
@@ -315,5 +341,6 @@ namespace Twitchdouken
     public struct Subscriber
     {
         public string name;
+        public string months;
     }
 }

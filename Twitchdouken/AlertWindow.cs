@@ -10,11 +10,17 @@ using System.Windows.Forms;
 
 namespace Twitchdouken
 {
-    public partial class Form1 : Form
+    public partial class AlertWindow : Form
     {
-        public Form1()
+        public AlertWindow()
         {
             InitializeComponent();
+        }
+
+        private void AlertWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
         }
     }
 }
