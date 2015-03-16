@@ -25,8 +25,8 @@ namespace Twitchdouken
             this.ta_api = "http://www.twitchalerts.com/api/donations?access_token=";
             this.ta_access_token = ta_access_token;
             this.new_donation_queue = new List<Donation>();
-            this.update_sleep_time = 30 * 1000;
-            this.syncDonationList();
+            this.update_sleep_time = 20 * 1000;
+            this.donation_list = new List<Donation>();
         }
 
 
@@ -57,6 +57,7 @@ namespace Twitchdouken
 
         public void runAsThread()
         {
+            System.Threading.Thread.Sleep(5000);
             this.run_thread = true;
             this.update_donations = true;
             this.syncDonationList();
@@ -138,7 +139,7 @@ namespace Twitchdouken
 
     struct Donation
     {
-        public string name;
+        public string name { get; set; }
         public string comment;
         public string amount;
         public string id;

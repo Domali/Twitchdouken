@@ -33,7 +33,7 @@ namespace Twitchdouken
         private List<Subscriber> subscriber_list;
         private List<Subscriber> new_subscriber_queue;
         private Random rand;
-        public TwitchAPIHelper(string channel_name, string client_id, string sub_access_token)
+        public TwitchAPIHelper(string channel_name, string sub_access_token)
         {
             rand = new Random();
             this.twitch_api = "https://api.twitch.tv/kraken/";
@@ -42,7 +42,7 @@ namespace Twitchdouken
             this.follower_api = "channels/" + channel_name + "/follows";
             this.subscriber_api = "channels/" + channel_name + "/subscriptions";
             this.channel_name = channel_name;
-            this.client_id = client_id;
+            this.client_id = "qp3ucacbwu3thy6015demf8r8fn43ht";
             this.sub_access_token = sub_access_token;
             this.new_follower_queue = new List<Follower>();
             this.new_subscriber_queue = new List<Subscriber>();
@@ -244,7 +244,7 @@ namespace Twitchdouken
             List<Follower> followers = new List<Follower>();
             this.updateFollowerTotal();
             //Block this out to only get the first 200 until twitch fixes their api.
-            int end_offset = 200;//this.total_followers;
+            int end_offset = 1600;//this.total_followers;
             for (int offset = 0; offset <= end_offset; offset += 100)
             {
                 string api_request = this.follower_api + "?direction=DESC&limit=100&offset=" + offset.ToString();
