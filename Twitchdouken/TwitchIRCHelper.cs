@@ -14,13 +14,29 @@ namespace Twitchdouken
         private static string channel_name;
         private static List<Host> new_host_queue;
         private static List<Subscriber> new_subscriber_queue;
-
+        private static string user;
+        private static string credentials;
+        public static bool update_subscribers {get; set; }
+        public static bool update_hosts { get; set; }
         public TwitchIRCHelper(string username, string password)
         {
             new_host_queue = new List<Host>();
             new_subscriber_queue = new List<Subscriber>();
+            update_subscribers = false;
+            update_hosts = false;
+            user = username;
+            credentials = password; 
+        }
+
+        public static void stopClient()
+        {
+            client.Disconnect();
+        }
+
+        public static void connectToIRC()
+        {
             string server = "irc.twitch.tv";
-            channel_name = "#" + username;
+            channel_name = "#" + user;
             client = new IrcDotNet.TwitchIrcClient();
             client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
             client.Disconnected += IrcClient_Disconnected;
@@ -35,9 +51,9 @@ namespace Twitchdouken
                     client.Connect(server, false,
                         new IrcUserRegistrationInfo()
                         {
-                            NickName = username,
-                            Password = password,
-                            UserName = username
+                            NickName = user,
+                            Password = credentials,
+                            UserName = user
                         });
                     if (!connectedEvent.Wait(10000))
                     {
@@ -50,9 +66,8 @@ namespace Twitchdouken
                 }
             }
             client.Channels.Join(channel_name);
-            client.SendRawMessage("twitchclient 3");       
+            client.SendRawMessage("twitchclient 3");      
         }
-
         private static void IrcClient_Registered(object sender, EventArgs e)
         {
             var client = (IrcClient)sender;
@@ -92,7 +107,7 @@ namespace Twitchdouken
         private static void IrcClient_Channel_MessageReceived(object sender, IrcMessageEventArgs e)
         {
             var channel = (IrcChannel)sender;
-            if(channel.Name.ToLower() == channel_name && e.Source.Name.ToLower() == "twitchnotify")
+            if(update_subscribers == true && channel.Name.ToLower() == channel_name && e.Source.Name.ToLower() == "twitchnotify")
             {
                 string temp_string = e.Text;
                 string[] sArray = temp_string.Split(new Char[] { ' ' });
@@ -119,7 +134,7 @@ namespace Twitchdouken
         private static void IrcClient_LocalUser_MessageReceived(object sender, IrcMessageEventArgs e)
         {
             var localUser = (IrcLocalUser)sender;
-            if (e.Source is IrcUser && e.Source.Name.ToLower() == "jtv")
+            if (update_hosts == true && e.Source is IrcUser && e.Source.Name.ToLower() == "jtv")
             {
                 string temp_string = e.Text;
                 string[] sArray = temp_string.Split(new Char[]{' '});

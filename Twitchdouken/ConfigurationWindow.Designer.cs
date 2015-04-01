@@ -62,15 +62,27 @@
             this.ircOAuthLabel = new System.Windows.Forms.Label();
             this.channelLabel = new System.Windows.Forms.Label();
             this.generalCfg = new System.Windows.Forms.TabPage();
+            this.activeAlertBox = new System.Windows.Forms.GroupBox();
+            this.donationBox = new System.Windows.Forms.CheckBox();
+            this.activeDonationLabel = new System.Windows.Forms.Label();
+            this.hostBox = new System.Windows.Forms.CheckBox();
+            this.activeHostLabel = new System.Windows.Forms.Label();
+            this.subscriberBox = new System.Windows.Forms.CheckBox();
+            this.followerBox = new System.Windows.Forms.CheckBox();
+            this.activeSubscriberLabel = new System.Windows.Forms.Label();
+            this.activeFollowerLabel = new System.Windows.Forms.Label();
             this.saveAllBtn = new System.Windows.Forms.Button();
             this.setDefaultMovieBtn = new System.Windows.Forms.Button();
             this.defaultMovieCfgBox = new System.Windows.Forms.TextBox();
             this.defaultMovieLabel = new System.Windows.Forms.Label();
             this.configTabCtrl = new System.Windows.Forms.TabControl();
+            this.runAtStartBox = new System.Windows.Forms.CheckBox();
+            this.runAtStartLabel = new System.Windows.Forms.Label();
             this.movieCfg.SuspendLayout();
             this.twitchAlertCfg.SuspendLayout();
             this.twitchAPICfg.SuspendLayout();
             this.generalCfg.SuspendLayout();
+            this.activeAlertBox.SuspendLayout();
             this.configTabCtrl.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -399,6 +411,9 @@
             // 
             // generalCfg
             // 
+            this.generalCfg.Controls.Add(this.runAtStartLabel);
+            this.generalCfg.Controls.Add(this.runAtStartBox);
+            this.generalCfg.Controls.Add(this.activeAlertBox);
             this.generalCfg.Controls.Add(this.saveAllBtn);
             this.generalCfg.Controls.Add(this.setDefaultMovieBtn);
             this.generalCfg.Controls.Add(this.defaultMovieCfgBox);
@@ -411,11 +426,100 @@
             this.generalCfg.Text = "General";
             this.generalCfg.UseVisualStyleBackColor = true;
             // 
+            // activeAlertBox
+            // 
+            this.activeAlertBox.Controls.Add(this.donationBox);
+            this.activeAlertBox.Controls.Add(this.activeDonationLabel);
+            this.activeAlertBox.Controls.Add(this.hostBox);
+            this.activeAlertBox.Controls.Add(this.activeHostLabel);
+            this.activeAlertBox.Controls.Add(this.subscriberBox);
+            this.activeAlertBox.Controls.Add(this.followerBox);
+            this.activeAlertBox.Controls.Add(this.activeSubscriberLabel);
+            this.activeAlertBox.Controls.Add(this.activeFollowerLabel);
+            this.activeAlertBox.Location = new System.Drawing.Point(10, 50);
+            this.activeAlertBox.Name = "activeAlertBox";
+            this.activeAlertBox.Size = new System.Drawing.Size(222, 60);
+            this.activeAlertBox.TabIndex = 5;
+            this.activeAlertBox.TabStop = false;
+            this.activeAlertBox.Text = "Active Alerts";
+            // 
+            // donationBox
+            // 
+            this.donationBox.AutoSize = true;
+            this.donationBox.Location = new System.Drawing.Point(196, 37);
+            this.donationBox.Name = "donationBox";
+            this.donationBox.Size = new System.Drawing.Size(15, 14);
+            this.donationBox.TabIndex = 7;
+            this.donationBox.UseVisualStyleBackColor = true;
+            // 
+            // activeDonationLabel
+            // 
+            this.activeDonationLabel.AutoSize = true;
+            this.activeDonationLabel.Location = new System.Drawing.Point(121, 37);
+            this.activeDonationLabel.Name = "activeDonationLabel";
+            this.activeDonationLabel.Size = new System.Drawing.Size(74, 13);
+            this.activeDonationLabel.TabIndex = 6;
+            this.activeDonationLabel.Text = "Donation Alert";
+            // 
+            // hostBox
+            // 
+            this.hostBox.AutoSize = true;
+            this.hostBox.Location = new System.Drawing.Point(196, 15);
+            this.hostBox.Name = "hostBox";
+            this.hostBox.Size = new System.Drawing.Size(15, 14);
+            this.hostBox.TabIndex = 5;
+            this.hostBox.UseVisualStyleBackColor = true;
+            // 
+            // activeHostLabel
+            // 
+            this.activeHostLabel.AutoSize = true;
+            this.activeHostLabel.Location = new System.Drawing.Point(137, 16);
+            this.activeHostLabel.Name = "activeHostLabel";
+            this.activeHostLabel.Size = new System.Drawing.Size(53, 13);
+            this.activeHostLabel.TabIndex = 4;
+            this.activeHostLabel.Text = "Host Alert";
+            // 
+            // subscriberBox
+            // 
+            this.subscriberBox.AutoSize = true;
+            this.subscriberBox.Location = new System.Drawing.Point(98, 37);
+            this.subscriberBox.Name = "subscriberBox";
+            this.subscriberBox.Size = new System.Drawing.Size(15, 14);
+            this.subscriberBox.TabIndex = 3;
+            this.subscriberBox.UseVisualStyleBackColor = true;
+            // 
+            // followerBox
+            // 
+            this.followerBox.AutoSize = true;
+            this.followerBox.Location = new System.Drawing.Point(98, 16);
+            this.followerBox.Name = "followerBox";
+            this.followerBox.Size = new System.Drawing.Size(15, 14);
+            this.followerBox.TabIndex = 2;
+            this.followerBox.UseVisualStyleBackColor = true;
+            // 
+            // activeSubscriberLabel
+            // 
+            this.activeSubscriberLabel.AutoSize = true;
+            this.activeSubscriberLabel.Location = new System.Drawing.Point(10, 37);
+            this.activeSubscriberLabel.Name = "activeSubscriberLabel";
+            this.activeSubscriberLabel.Size = new System.Drawing.Size(81, 13);
+            this.activeSubscriberLabel.TabIndex = 1;
+            this.activeSubscriberLabel.Text = "Subscriber Alert";
+            // 
+            // activeFollowerLabel
+            // 
+            this.activeFollowerLabel.AutoSize = true;
+            this.activeFollowerLabel.Location = new System.Drawing.Point(21, 16);
+            this.activeFollowerLabel.Name = "activeFollowerLabel";
+            this.activeFollowerLabel.Size = new System.Drawing.Size(70, 13);
+            this.activeFollowerLabel.TabIndex = 0;
+            this.activeFollowerLabel.Text = "Follower Alert";
+            // 
             // saveAllBtn
             // 
-            this.saveAllBtn.Location = new System.Drawing.Point(10, 51);
+            this.saveAllBtn.Location = new System.Drawing.Point(238, 87);
             this.saveAllBtn.Name = "saveAllBtn";
-            this.saveAllBtn.Size = new System.Drawing.Size(110, 23);
+            this.saveAllBtn.Size = new System.Drawing.Size(105, 23);
             this.saveAllBtn.TabIndex = 3;
             this.saveAllBtn.Text = "Save Configuration";
             this.saveAllBtn.UseVisualStyleBackColor = true;
@@ -429,6 +533,7 @@
             this.setDefaultMovieBtn.TabIndex = 2;
             this.setDefaultMovieBtn.Text = "Set";
             this.setDefaultMovieBtn.UseVisualStyleBackColor = true;
+            this.setDefaultMovieBtn.Click += new System.EventHandler(this.setDefaultMovieBtn_Click);
             // 
             // defaultMovieCfgBox
             // 
@@ -459,6 +564,24 @@
             this.configTabCtrl.Size = new System.Drawing.Size(407, 269);
             this.configTabCtrl.TabIndex = 25;
             // 
+            // runAtStartBox
+            // 
+            this.runAtStartBox.AutoSize = true;
+            this.runAtStartBox.Location = new System.Drawing.Point(328, 65);
+            this.runAtStartBox.Name = "runAtStartBox";
+            this.runAtStartBox.Size = new System.Drawing.Size(15, 14);
+            this.runAtStartBox.TabIndex = 6;
+            this.runAtStartBox.UseVisualStyleBackColor = true;
+            // 
+            // runAtStartLabel
+            // 
+            this.runAtStartLabel.AutoSize = true;
+            this.runAtStartLabel.Location = new System.Drawing.Point(257, 65);
+            this.runAtStartLabel.Name = "runAtStartLabel";
+            this.runAtStartLabel.Size = new System.Drawing.Size(65, 13);
+            this.runAtStartLabel.TabIndex = 7;
+            this.runAtStartLabel.Text = "Run At Start";
+            // 
             // ConfigurationWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -476,6 +599,8 @@
             this.twitchAPICfg.PerformLayout();
             this.generalCfg.ResumeLayout(false);
             this.generalCfg.PerformLayout();
+            this.activeAlertBox.ResumeLayout(false);
+            this.activeAlertBox.PerformLayout();
             this.configTabCtrl.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -522,6 +647,17 @@
         internal System.Windows.Forms.TextBox subscriberOAuthBox;
         internal System.Windows.Forms.TextBox ircOAuthBox;
         internal System.Windows.Forms.TextBox channelBox;
+        private System.Windows.Forms.GroupBox activeAlertBox;
+        private System.Windows.Forms.Label activeDonationLabel;
+        private System.Windows.Forms.Label activeHostLabel;
+        private System.Windows.Forms.Label activeSubscriberLabel;
+        private System.Windows.Forms.Label activeFollowerLabel;
+        internal System.Windows.Forms.CheckBox donationBox;
+        internal System.Windows.Forms.CheckBox hostBox;
+        internal System.Windows.Forms.CheckBox subscriberBox;
+        internal System.Windows.Forms.CheckBox followerBox;
+        private System.Windows.Forms.Label runAtStartLabel;
+        internal System.Windows.Forms.CheckBox runAtStartBox;
 
     }
 }

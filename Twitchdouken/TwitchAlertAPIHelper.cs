@@ -17,16 +17,16 @@ namespace Twitchdouken
         private List<Donation> donation_list;
         private List<Donation> new_donation_queue;
         private bool run_thread = false;
-        private bool update_donations;
         private int update_sleep_time;
-
+        private float session_donation_total;
         public TwitchAlertAPIHelper(string ta_access_token)
         {
             this.ta_api = "http://www.twitchalerts.com/api/donations?access_token=";
             this.ta_access_token = ta_access_token;
             this.new_donation_queue = new List<Donation>();
-            this.update_sleep_time = 20 * 1000;
+            this.update_sleep_time = 20;//How many seconds between updates
             this.donation_list = new List<Donation>();
+            this.session_donation_total = 0;
         }
 
 
@@ -57,19 +57,35 @@ namespace Twitchdouken
 
         public void runAsThread()
         {
-            System.Threading.Thread.Sleep(5000);
             this.run_thread = true;
-            this.update_donations = true;
             this.syncDonationList();
-            while (this.run_thread)
+            while (true)
             {
-                if(this.update_donations)
+                this.findNewDonations();
+                for (int x = 0; x < this.update_sleep_time; x++ )
                 {
-                    this.findNewDonations();
+                    System.Threading.Thread.Sleep(1000);
+                    if(this.run_thread == false)
+                    {
+                        break;
+                    }
                 }
-                System.Threading.Thread.Sleep(this.update_sleep_time);
+                if(!this.run_thread)
+                {
+                    break;
+                }
+                    
             }
             return;
+        }
+
+        public void stopThread()
+        {
+            this.run_thread = false;
+        }
+        public float getDonationTotal()
+        {
+            return this.session_donation_total;
         }
 
         public bool newDonationCheck()
@@ -129,6 +145,7 @@ namespace Twitchdouken
                 bool found = this.donation_list.Any(x => x.id == donation.id);
                 if (!found)
                 {
+                    this.session_donation_total += float.Parse(donation.amount);
                     this.donation_list.Add(donation);
                     this.queueDonation(donation);
                 }

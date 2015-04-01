@@ -18,7 +18,9 @@ namespace Twitchdouken
         private TwitchAPIHelper twitchHelper;
         private TwitchAlertAPIHelper taHelper;
         private TwitchIRCHelper ircHelper;
-
+        private Thread twitchAPIThread;
+        private Thread taThread;
+        private bool running = false;
         static string flash_xml = "<invoke name=\"{0}\" returntype=\"xml\"><arguments><string>{1}</string></arguments></invoke>";
 
         public Twitchdouken()
@@ -28,16 +30,6 @@ namespace Twitchdouken
             configWindow = new ConfigurationWindow(this);
             alertWindow.Show();
             donationBox.DisplayMember = "name";
-            this.twitchHelper = new TwitchAPIHelper(this.configWindow.channelBox.Text, this.configWindow.subscriberOAuthBox.Text);
-            this.ircHelper = new TwitchIRCHelper(this.configWindow.channelBox.Text.ToLower(), this.configWindow.ircOAuthBox.Text);
-            taHelper = new TwitchAlertAPIHelper(this.configWindow.TAAccessTokenBox.Text);
-            Thread twitchAPIThread = new Thread(this.twitchHelper.runAsThread);
-            Thread taThread = new Thread(this.taHelper.runAsThread);
-            taThread.IsBackground = true;
-            twitchAPIThread.IsBackground = true;
-            taThread.Start();
-            twitchAPIThread.Start();
-
         }
 
         private void cfgBtn_Click(object sender, EventArgs e)
@@ -94,42 +86,65 @@ namespace Twitchdouken
 
         private void UIUpdater_Tick(object sender, EventArgs e)
         {
-            followTimeLabel.Text = this.twitchHelper.getFollowUpdateTime();
-            subscriberTimeLabel.Text = this.twitchHelper.getSubscriberUpdateTime();
-            checkAndPlayALerts();
-
+            if(running == true)
+            {
+                followTimeLabel.Text = this.twitchHelper.getFollowUpdateTime();
+                subscriberTimeLabel.Text = this.twitchHelper.getSubscriberUpdateTime();
+                checkAndPlayALerts();
+            }
+            else if (!taThread.IsAlive && !twitchAPIThread.IsAlive) 
+            {
+                // Once the two threds are joined after a stop we have to finish killing everything
+                // This is done in the timer so that we don't get an unresponsive GUI.
+                this.ircHelper = null;
+                this.twitchHelper = null;
+                this.taHelper = null;
+                this.configWindow.channelBox.ReadOnly = false;
+                this.configWindow.ircOAuthBox.ReadOnly = false;
+                this.configWindow.subscriberOAuthBox.ReadOnly = false;
+                this.configWindow.TAAccessTokenBox.ReadOnly = false;
+                this.configWindow.subscriberBox.Enabled = true;
+                this.configWindow.followerBox.Enabled = true;
+                this.configWindow.hostBox.Enabled = true;
+                this.configWindow.donationBox.Enabled = true;
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                startStopBtn.Enabled = true;
+                startStopBtn.Text = "Start";
+                UIUpdater.Enabled = false;
+            }       
         }
 
         private void checkAndPlayALerts()
         {
             if (!alertWindow.flashAlert.IsPlaying())
             {
-                if (this.twitchHelper.newSubscriberCheck())
+                if (this.twitchHelper.newSubscriberCheck() && this.configWindow.subscriberBox.Checked == true)
                 {
                     Subscriber new_subscriber = this.twitchHelper.getSubscriber();
                     this.subscriberBox.Items.Insert(0, new_subscriber.name);
                     this.playSubscriber(new_subscriber.name, "");
                 }
-                else if (this.ircHelper.newSubscriberCheck())
+                else if (this.ircHelper.newSubscriberCheck() && this.configWindow.subscriberBox.Checked == true)
                 {
                     Subscriber new_subscriber = this.ircHelper.getSubscriber();
                     this.playSubscriber(new_subscriber.name, new_subscriber.months + " months");
                     this.subscriberBox.Items.Insert(0, new_subscriber.name + " (" + new_subscriber.months + ")");
                 }
-                else if (this.taHelper.newDonationCheck())
+                else if (this.taHelper.newDonationCheck() && this.configWindow.donationBox.Checked == true)
                 {
                     Donation new_donation = this.taHelper.getDonation();
                     this.playDonation(new_donation.name, "$" + new_donation.amount);
                     this.donationBox.Items.Insert(0, new_donation);
                     this.donationBox.SetSelected(0, true);
                 }
-                else if (this.ircHelper.newHostCheck())
+                else if (this.ircHelper.newHostCheck() && this.configWindow.hostBox.Checked == true)
                 {
                     Host new_host = this.ircHelper.getHost();
                     this.playHost(new_host.name, new_host.viewers);
                     this.hostBox.Items.Insert(0, new_host.name + " " + new_host.viewers);
                 }
-                else if (this.twitchHelper.newFollowerCheck())
+                else if (this.twitchHelper.newFollowerCheck() && this.configWindow.hostBox.Checked == true)
                 {
                     List<Follower> new_followers = this.twitchHelper.getFollowerQueue();
                     List<string> follower_list = new List<string>();
@@ -151,9 +166,63 @@ namespace Twitchdouken
             this.commentBox.Text = donation.comment;
         }
 
+        public void clickStarStopButton()
+        {
+            if (running == false)
+            {
+                this.twitchHelper = new TwitchAPIHelper(this.configWindow.channelBox.Text,
+                    this.configWindow.subscriberOAuthBox.Text);
+                this.ircHelper = new TwitchIRCHelper(this.configWindow.channelBox.Text.ToLower(),
+                    this.configWindow.ircOAuthBox.Text);
+                this.taHelper = new TwitchAlertAPIHelper(this.configWindow.TAAccessTokenBox.Text);
+                twitchAPIThread = new Thread(this.twitchHelper.runAsThread);
+                taThread = new Thread(this.taHelper.runAsThread);
+                taThread.IsBackground = true;
+                twitchAPIThread.IsBackground = true;
+                twitchHelper.update_followers = this.configWindow.followerBox.Checked;
+                twitchHelper.update_subscribers = this.configWindow.subscriberBox.Checked;
+                TwitchIRCHelper.update_hosts = this.configWindow.hostBox.Checked;
+                TwitchIRCHelper.update_subscribers = this.configWindow.subscriberBox.Checked;
+                if (this.configWindow.subscriberBox.Checked == true || this.configWindow.followerBox.Checked == true)
+                {
+                    twitchAPIThread.Start();
+                }
+
+                if (this.configWindow.donationBox.Checked == true)
+                {
+                    taThread.Start();
+                }
+
+                if (this.configWindow.hostBox.Checked == true || this.configWindow.subscriberBox.Checked == true)
+                {
+                    TwitchIRCHelper.connectToIRC();
+                }
+
+                UIUpdater.Enabled = true;
+                this.configWindow.channelBox.ReadOnly = true;
+                this.configWindow.ircOAuthBox.ReadOnly = true;
+                this.configWindow.subscriberOAuthBox.ReadOnly = true;
+                this.configWindow.TAAccessTokenBox.ReadOnly = true;
+                this.configWindow.subscriberBox.Enabled = false;
+                this.configWindow.followerBox.Enabled = false;
+                this.configWindow.hostBox.Enabled = false;
+                this.configWindow.donationBox.Enabled = false;
+                startStopBtn.Text = "Stop";
+                running = true;
+            }
+            else
+            {
+                startStopBtn.Enabled = false;
+                running = false;
+                this.twitchHelper.stopThread();
+                this.taHelper.stopThread();
+                TwitchIRCHelper.stopClient();
+            }
+        }
+
         private void startStopBtn_Click(object sender, EventArgs e)
         {
-
+            this.clickStarStopButton();
         }
     }
 }

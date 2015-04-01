@@ -247,7 +247,6 @@
             // 
             // UIUpdater
             // 
-            this.UIUpdater.Enabled = true;
             this.UIUpdater.Tick += new System.EventHandler(this.UIUpdater_Tick);
             // 
             // startStopBtn
@@ -320,7 +319,7 @@
         private System.Windows.Forms.Label commentLabel;
         private System.Windows.Forms.TextBox commentBox;
         private System.Windows.Forms.Timer UIUpdater;
-        private System.Windows.Forms.Button startStopBtn;
+        internal System.Windows.Forms.Button startStopBtn;
 
     }
 }

@@ -39,8 +39,10 @@
             this.flashAlert.Location = new System.Drawing.Point(0, 0);
             this.flashAlert.Name = "flashAlert";
             this.flashAlert.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("flashAlert.OcxState")));
+            this.flashAlert.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
             this.flashAlert.Size = new System.Drawing.Size(400, 571);
             this.flashAlert.TabIndex = 1;
+            this.flashAlert.Enter += new System.EventHandler(this.flashAlert_Enter);
             // 
             // AlertWindow
             // 

@@ -22,5 +22,10 @@ namespace Twitchdouken
             this.Hide();
             e.Cancel = true;
         }
+
+        private void flashAlert_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }

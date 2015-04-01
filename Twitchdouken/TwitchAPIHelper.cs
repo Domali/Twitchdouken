@@ -20,19 +20,20 @@ namespace Twitchdouken
         private string sub_access_token;
         private int total_followers;
         private int total_subscribers;
-        private string follower_file;
-        private string subscriber_file;
         private string follow_update_time;
         private string subscriber_update_time;
-        private bool update_followers;
-        private bool update_subscribers;
+        public bool update_followers { get; set; }
+        public bool update_subscribers { get; set; }
         private bool run_thread;
         private int update_sleep_time;
         private List<Follower> follower_list;
         private List<Follower> new_follower_queue;
         private List<Subscriber> subscriber_list;
         private List<Subscriber> new_subscriber_queue;
+        private int session_followers;
+        private int session_subscribers;
         private Random rand;
+
         public TwitchAPIHelper(string channel_name, string sub_access_token)
         {
             rand = new Random();
@@ -46,33 +47,51 @@ namespace Twitchdouken
             this.sub_access_token = sub_access_token;
             this.new_follower_queue = new List<Follower>();
             this.new_subscriber_queue = new List<Subscriber>();
-            this.update_sleep_time = 30 * 1000;
-            //Following files are obviously just placeholders for now
-            //Maybe even look into using a database for this stuff
-            this.follower_file = @"C:\Users\Sean\Desktop\current_followers.data";
-            this.subscriber_file = @"C:\Users\Sean\Desktop\current_subscribers.data";
+            this.session_followers = 0;
+            this.session_subscribers = 0;
+            this.update_sleep_time = 30;//How many seconds between updates
         }
 
         public void runAsThread()
         {
             this.run_thread = true;
-            this.update_followers = true;
-            this.update_subscribers = true;
-            this.syncFollowerList();
-            this.syncSubscriberList();
-            while (this.run_thread)
+            if(this.update_followers)
             {
-                if (this.update_followers)
-                {
-                    this.findNewFollowers();
-                }
+                this.syncFollowerList();
+            }        
+            if(this.update_subscribers)
+            {
+                this.syncSubscriberList();
+            }
+            while (true)
+            {
                 if (this.update_subscribers)
                 {
                     this.findNewSubscribers();
                 }
-                System.Threading.Thread.Sleep(this.update_sleep_time);
+                if (this.update_followers)
+                {
+                    this.findNewFollowers();
+                }
+                for (int x = 0; x < this.update_sleep_time; x++)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    if(!this.run_thread)
+                    {
+                        break;
+                    }
+                }
+                if(!this.run_thread)
+                {
+                    break;
+                }
             }
             return;
+        }
+
+        public void stopThread()
+        {
+            this.run_thread = false;
         }
 
         public bool newFollowerCheck()
@@ -180,6 +199,10 @@ namespace Twitchdouken
                 string api_request = this.subscriber_api + "?direction=DESC&limit=100&offset=" + offset.ToString();
                 string data = this.PollAPI(api_request);
                 subscribers.AddRange(this.parseSubscribers(data));
+                if(!this.run_thread)
+                {
+                    break;
+                }
             }
             return subscribers;
         }
@@ -202,6 +225,7 @@ namespace Twitchdouken
                 bool found = this.subscriber_list.Any(x => x.name.ToLower() == subscriber.name.ToLower());
                 if (!found)
                 {
+                    this.session_subscribers++;
                     new_subscriber_list.Add(subscriber);
                 }
             }
@@ -243,13 +267,17 @@ namespace Twitchdouken
         {
             List<Follower> followers = new List<Follower>();
             this.updateFollowerTotal();
-            //Block this out to only get the first 200 until twitch fixes their api.
+            //Block this out to only get the first 1700 until twitch fixes their api.
             int end_offset = 1600;//this.total_followers;
             for (int offset = 0; offset <= end_offset; offset += 100)
             {
                 string api_request = this.follower_api + "?direction=DESC&limit=100&offset=" + offset.ToString();
                 string data = this.PollAPI(api_request);
                 followers.AddRange(this.parseFollowers(data));
+                if(!this.run_thread)
+                {
+                    break;
+                }
             }
             return followers;
         }
@@ -271,6 +299,7 @@ namespace Twitchdouken
                 bool found = this.follower_list.Any(x => x.name.ToLower() == follower.name.ToLower());
                 if (!found)
                 {
+                    this.session_followers++;
                     new_follower_list.Add(follower);
                 }
             }
@@ -281,26 +310,10 @@ namespace Twitchdouken
 
         private void saveFollowers()
         {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(this.follower_file))
-            {
-                foreach (Follower follower in this.follower_list)
-                {
-                    file.WriteLine(follower.name);
-                }
-            }
-            return;
         }
 
         private void saveSubscribers()
         {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(this.subscriber_file))
-            {
-                foreach (Subscriber subscriber in this.subscriber_list)
-                {
-                    file.WriteLine(subscriber.name);
-                }
-            }
-            return;
         }
 
         private string PollAPI(string api_request)
@@ -330,6 +343,16 @@ namespace Twitchdouken
                 }
             }
             return responseFromServer;
+        }
+        
+        public int getSessionFollowerTotal()
+        {
+            return this.session_followers;
+        }
+
+        public int getSessionSubscriberTotal()
+        {
+            return this.session_subscribers;
         }
     }
 
