@@ -24,7 +24,7 @@ namespace Twitchdouken
             this.loadTotalConfig();
             if (this.runAtStartBox.Checked == true)
             {
-                this.parent.clickStarStopButton();   
+                //this.parent.clickStarStopButton();   
             }
         }
 

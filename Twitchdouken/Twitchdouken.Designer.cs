@@ -289,6 +289,7 @@
             this.Controls.Add(this.cfgBtn);
             this.Name = "Twitchdouken";
             this.Text = "Twitchdouken";
+            this.Load += new System.EventHandler(this.Twitchdouken_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

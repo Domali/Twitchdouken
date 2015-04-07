@@ -224,5 +224,13 @@ namespace Twitchdouken
         {
             this.clickStarStopButton();
         }
+
+        private void Twitchdouken_Load(object sender, EventArgs e)
+        {
+            if(this.configWindow.runAtStartBox.Checked)
+            {
+                this.clickStarStopButton();
+            }
+        }
     }
 }
