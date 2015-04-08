@@ -144,7 +144,7 @@ namespace Twitchdouken
                     this.playHost(new_host.name, new_host.viewers);
                     this.hostBox.Items.Insert(0, new_host.name + " " + new_host.viewers);
                 }
-                else if (this.twitchHelper.newFollowerCheck() && this.configWindow.hostBox.Checked == true)
+                else if (this.twitchHelper.newFollowerCheck() && this.configWindow.followerBox.Checked == true)
                 {
                     List<Follower> new_followers = this.twitchHelper.getFollowerQueue();
                     List<string> follower_list = new List<string>();
