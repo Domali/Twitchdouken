@@ -216,7 +216,10 @@ namespace Twitchdouken
                 running = false;
                 this.twitchHelper.stopThread();
                 this.taHelper.stopThread();
-                TwitchIRCHelper.stopClient();
+                if (this.configWindow.hostBox.Checked)
+                {
+                    TwitchIRCHelper.stopClient();
+                }
             }
         }
 
