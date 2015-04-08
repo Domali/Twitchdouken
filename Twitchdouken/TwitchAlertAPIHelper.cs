@@ -65,7 +65,7 @@ namespace Twitchdouken
                 for (int x = 0; x < this.update_sleep_time; x++ )
                 {
                     System.Threading.Thread.Sleep(1000);
-                    if(this.run_thread == false)
+                    if(!this.run_thread)
                     {
                         break;
                     }

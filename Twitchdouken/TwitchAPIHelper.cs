@@ -269,6 +269,10 @@ namespace Twitchdouken
             this.updateFollowerTotal();
             //Block this out to only get the first 1700 until twitch fixes their api.
             int end_offset = 1600;//this.total_followers;
+            if(this.total_followers < end_offset)
+            {
+                end_offset = this.total_followers;
+            }
             for (int offset = 0; offset <= end_offset; offset += 100)
             {
                 string api_request = this.follower_api + "?direction=DESC&limit=100&offset=" + offset.ToString();
@@ -334,6 +338,7 @@ namespace Twitchdouken
                     Stream dataStream = response.GetResponseStream();
                     StreamReader reader = new StreamReader(dataStream);
                     responseFromServer = reader.ReadToEnd();
+                    Console.WriteLine(responseFromServer);
                     keepTrying = false;
                 }
                 catch

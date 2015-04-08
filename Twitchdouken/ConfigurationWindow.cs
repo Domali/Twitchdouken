@@ -22,10 +22,6 @@ namespace Twitchdouken
             this.parent = parent;
             this.twitchdouken_config_file = @"D:\TwitchdoukenConfigStuff\twitchdouken.cfg";
             this.loadTotalConfig();
-            if (this.runAtStartBox.Checked == true)
-            {
-                //this.parent.clickStarStopButton();   
-            }
         }
 
         private string getFile()
