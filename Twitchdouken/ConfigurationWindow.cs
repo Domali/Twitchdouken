@@ -18,50 +18,57 @@ namespace Twitchdouken
 
         private string configFilePath;
         private bool initialized;
+
         public ConfigurationWindow(Twitchdouken parent)
         {
             InitializeComponent();
-            this.parent = parent;
-            this.configFilePath = @"settings.cfg";
+
+            configFilePath = @"settings.cfg";
 
             initialized = false;
+            loadTotalConfig();
 
-            this.loadTotalConfig();
+            this.parent = parent;
         }
 
-        private string getFile()
+        private void setMovie(TextBox textbox)
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            openFileDialog1.InitialDirectory = "c:\\";
-            openFileDialog1.Filter = "SWF Movie|*.swf";
-            openFileDialog1.ShowDialog();
+            openFileDialog.InitialDirectory = "c:\\";
+            openFileDialog.Filter = "SWF Movie|*.swf";
+            openFileDialog.ShowDialog();
 
-            return openFileDialog1.FileName;
+            if (openFileDialog.FileName != "")
+            {
+                textbox.Text = openFileDialog.FileName;
+            }
         }
 
         private void followerBtn_Click(object sender, EventArgs e)
         {
-            followerTxtBox.Text = getFile();
+            setMovie(followerTxtBox);
         }
 
         private void hostBtn_Click(object sender, EventArgs e)
         {
-            hostTxtBox.Text = getFile();
+            setMovie(hostTxtBox);
         }
 
         private void donationBtn_Click(object sender, EventArgs e)
         {
-            donationTxtBox.Text = getFile();
+            setMovie(donationTxtBox);
         }
 
         private void subscriberBtn_Click(object sender, EventArgs e)
         {
-            subscriberTxtBox.Text = getFile();
+            setMovie(subscriberTxtBox);
         }
 
         private void ConfigurationWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
+            parent.menuWindowsConfiguration.Checked = false;
+
             this.Hide();
             e.Cancel = true;
         }
@@ -88,24 +95,31 @@ namespace Twitchdouken
 
         private void newMovieCfgBtn_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
 
-            saveFileDialog1.Filter = "Configuration File|*.cfg";
-            saveFileDialog1.Title = "Configuration File Name";
-            saveFileDialog1.ShowDialog();
+            saveFileDialog.Filter = "Configuration File|*.cfg";
+            saveFileDialog.Title = "Configuration File Name";
+            saveFileDialog.ShowDialog();
 
-            movieConfigBox.Text = saveFileDialog1.FileName;
-            subscriberTxtBox.Text = "";
-            donationTxtBox.Text = "";
-            hostTxtBox.Text = "";
-            followerTxtBox.Text = "";
+            if (saveFileDialog.FileName != "")
+            {
+                movieConfigBox.Text = saveFileDialog.FileName;
+                subscriberTxtBox.Text = "";
+                donationTxtBox.Text = "";
+                hostTxtBox.Text = "";
+                followerTxtBox.Text = "";
+            }
         }
 
         private void saveMovieConfigurationFile(String filename)
         {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename))
+            if (filename != "")
             {
-                file.WriteLine(generateMovieConfig().ToString());
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename))
+                {
+                    file.WriteLine(generateMovieConfig().ToString());
+                    MessageBox.Show(null, "Movie Configuration file has been saved successfully.", "Movie Configuration", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
         }
 
@@ -133,15 +147,15 @@ namespace Twitchdouken
             }
             catch (System.IO.DirectoryNotFoundException)
             {
-                System.Windows.Forms.MessageBox.Show("Movie configuration file not found - please select another file and try again.", "Movie Configuration File Not Found");
+                MessageBox.Show(null, "Movie configuration file not found - please select another file and try again.", "Movie Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (System.IO.FileNotFoundException)
             {
-                System.Windows.Forms.MessageBox.Show("Movie configuration file not found - please select another file and try again.", "Movie Configuration File Not Found");
+                MessageBox.Show(null, "Movie configuration file not found - please select another file and try again.", "Movie Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (System.NullReferenceException)
             {
-                System.Windows.Forms.MessageBox.Show("The movie configuration file is malformed. Please correct this issue and try again", "Malformed Movie Configuration File");
+                MessageBox.Show(null, "The movie configuration file is malformed. Please correct this issue and try again", "Movie Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -152,18 +166,20 @@ namespace Twitchdouken
 
         private void loadMovieCfgBtn_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.InitialDirectory = "c:\\";
-            openFileDialog1.Filter = "Configuration File|*.cfg";
-            openFileDialog1.Title = "Configuration File Name";
-            openFileDialog1.ShowDialog();
-            if (openFileDialog1.FileName != "")
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.InitialDirectory = "c:\\";
+            openFileDialog.Filter = "Configuration File|*.cfg";
+            openFileDialog.Title = "Configuration File Name";
+            openFileDialog.ShowDialog();
+
+            if (openFileDialog.FileName != "")
             {
-                loadMovieConfigurationFile(openFileDialog1.FileName);
+                loadMovieConfigurationFile(openFileDialog.FileName);
             }
         }
 
-        private  JObject generateMovieConfig()
+        private JObject generateMovieConfig()
         {
             JObject config = JObject.FromObject(new
             {
@@ -211,12 +227,12 @@ namespace Twitchdouken
             {
                 general_config = new
                 {
-                    default_movie_config = this.defaultMovieCfgBox.Text,
-                    play_followers = this.followerBox.Checked,
-                    play_subscribers = this.subscriberBox.Checked,
-                    play_donations = this.donationBox.Checked,
-                    play_hosts = this.hostBox.Checked,
-                    run_at_start = this.runAtStartBox.Checked
+                    default_movie_config = defaultMovieCfgBox.Text,
+                    play_followers = followerBox.Checked,
+                    play_subscribers = subscriberBox.Checked,
+                    play_donations = donationBox.Checked,
+                    play_hosts = hostBox.Checked,
+                    run_at_start = runAtStartBox.Checked
                 }
             });
             return config;
@@ -230,12 +246,15 @@ namespace Twitchdouken
         private void saveTotalConfig()
         {
             JObject config = new JObject();
+
             config.Merge(generateGeneralConfig());
             config.Merge(generateTwitchConfig());
             config.Merge(generateTwitchAlertConfig());
+
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(this.configFilePath))
             {
                 file.WriteLine(config.ToString());
+                MessageBox.Show(null, "Configuration file has been saved successfully.", "Configuration File", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         public void loadTotalConfig()
@@ -247,21 +266,21 @@ namespace Twitchdouken
                     String json = file.ReadToEnd();
                     JToken token = JObject.Parse(json);
 
-                    this.followerBox.Checked = (bool)token["general_config"]["play_followers"];
-                    this.subscriberBox.Checked = (bool)token["general_config"]["play_subscribers"];
-                    this.donationBox.Checked = (bool)token["general_config"]["play_donations"];
-                    this.hostBox.Checked = (bool)token["general_config"]["play_hosts"];
-                    this.runAtStartBox.Checked = (bool)token["general_config"]["run_at_start"];
-                    this.defaultMovieCfgBox.Text = (string)token["general_config"]["default_movie_config"];
+                    followerBox.Checked = (bool)token["general_config"]["play_followers"];
+                    subscriberBox.Checked = (bool)token["general_config"]["play_subscribers"];
+                    donationBox.Checked = (bool)token["general_config"]["play_donations"];
+                    hostBox.Checked = (bool)token["general_config"]["play_hosts"];
+                    runAtStartBox.Checked = (bool)token["general_config"]["run_at_start"];
+                    defaultMovieCfgBox.Text = (string)token["general_config"]["default_movie_config"];
 
-                    this.channelBox.Text = (string)token["twitch_config"]["channel_name"];
-                    this.ircOAuthBox.Text = (string)token["twitch_config"]["irc_oauth"];
-                    this.subscriberOAuthBox.Text = (string)token["twitch_config"]["subscriber_oauth"];
+                    channelBox.Text = (string)token["twitch_config"]["channel_name"];
+                    ircOAuthBox.Text = (string)token["twitch_config"]["irc_oauth"];
+                    subscriberOAuthBox.Text = (string)token["twitch_config"]["subscriber_oauth"];
 
-                    this.TAAccessTokenBox.Text = (string)token["twitch_alert_config"]["ta_access_token"];
+                    TAAccessTokenBox.Text = (string)token["twitch_alert_config"]["ta_access_token"];
 
-                    if (this.defaultMovieCfgBox.Text != "")
-                        this.loadMovieConfigurationFile(this.defaultMovieCfgBox.Text);
+                    if (defaultMovieCfgBox.Text != "")
+                        loadMovieConfigurationFile(defaultMovieCfgBox.Text);
                 }
 
                 initialized = true;
@@ -269,61 +288,65 @@ namespace Twitchdouken
             }
             catch (System.IO.FileNotFoundException)
             {
-                System.Windows.Forms.MessageBox.Show("Configuration file not found - creating blank configuration file.", "Configuration File Not Found");
+                MessageBox.Show(null, "Configuration file not found - creating blank configuration file.", "Configuration File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-                this.followerBox.Checked = true;
-                this.subscriberBox.Checked = true;
-                this.donationBox.Checked = true;
-                this.hostBox.Checked = true;
+                followerBox.Checked = true;
+                subscriberBox.Checked = true;
+                donationBox.Checked = true;
+                hostBox.Checked = true;
 
                 initialized = true;
 
-                this.saveTotalConfig();
+                saveTotalConfig();
             }
             catch (System.NullReferenceException)
             {
-                System.Windows.Forms.MessageBox.Show("Please either fix or delete the configuration file to continue loading the program." +
-                    " The program will now terminate", "Error - Malformed Configuration File");
+                MessageBox.Show(null, "Please either fix or delete the current configuration file to continue loading the program." + 
+                                " The program will now terminate", 
+                                "Configuration File", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0);
             }
         }
         private void saveAllBtn_Click(object sender, EventArgs e)
         {
-            this.saveTotalConfig();
+            saveTotalConfig();
         }
 
         private void setDefaultMovieBtn_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.InitialDirectory = "c:\\";
-            openFileDialog1.Filter = "Configuration File|*.cfg";
-            openFileDialog1.Title = "Configuration File Name";
-            openFileDialog1.ShowDialog();
-            this.defaultMovieCfgBox.Text = openFileDialog1.FileName;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.InitialDirectory = "c:\\";
+            openFileDialog.Filter = "Configuration File|*.cfg";
+            openFileDialog.Title = "Configuration File Name";
+            openFileDialog.ShowDialog();
+
+            if (openFileDialog.FileName != "")
+                defaultMovieCfgBox.Text = openFileDialog.FileName;
         }
 
         private void followerBox_CheckedChanged(object sender, EventArgs e)
         {
             if (initialized)
-                this.parent.updateGUIElements();
+                parent.updateGUIElements();
         }
 
         private void hostBox_CheckedChanged(object sender, EventArgs e)
         {
             if (initialized)
-                this.parent.updateGUIElements();
+                parent.updateGUIElements();
         }
 
         private void subscriberBox_CheckedChanged(object sender, EventArgs e)
         {
             if (initialized)
-                this.parent.updateGUIElements();
+                parent.updateGUIElements();
         }
 
         private void donationBox_CheckedChanged(object sender, EventArgs e)
         {
             if (initialized)
-                this.parent.updateGUIElements();
+                parent.updateGUIElements();
         }
 
         private void ConfigurationWindow_Load(object sender, EventArgs e)
