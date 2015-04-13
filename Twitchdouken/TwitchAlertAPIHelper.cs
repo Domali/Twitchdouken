@@ -22,10 +22,10 @@ namespace Twitchdouken
         private int     updateSleepTime;
         private float   donationTotal;
 
-        public TwitchAlertAPIHelper(string accessToken)
+        public TwitchAlertAPIHelper(string token)
         {
             taAPI = "http://www.twitchalerts.com/api/donations?access_token=";
-            taAccessToken = accessToken;
+            taAccessToken = token;
 
             donationQueue = new List<Donation>();
             updateSleepTime = 20;    //How many seconds between updates
@@ -43,7 +43,7 @@ namespace Twitchdouken
             {
                 try
                 {
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.taAPI + this.taAccessToken);
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(taAPI + taAccessToken);
                     WebResponse response = request.GetResponse();
                     Stream dataStream = response.GetResponseStream();
                     StreamReader reader = new StreamReader(dataStream);
@@ -71,16 +71,13 @@ namespace Twitchdouken
                 for (int x = 0; x < this.updateSleepTime; x++)
                 {
                     Thread.Sleep(1000);
+
                     if (!running)
-                    {
                         break;
-                    }
                 }
 
                 if (!this.running)
-                {
                     break;
-                }
             }
         }
 
