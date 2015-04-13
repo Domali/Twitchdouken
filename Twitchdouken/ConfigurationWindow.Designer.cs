@@ -62,6 +62,8 @@
             this.ircOAuthLabel = new System.Windows.Forms.Label();
             this.channelLabel = new System.Windows.Forms.Label();
             this.generalCfg = new System.Windows.Forms.TabPage();
+            this.runAtStartLabel = new System.Windows.Forms.Label();
+            this.runAtStartBox = new System.Windows.Forms.CheckBox();
             this.activeAlertBox = new System.Windows.Forms.GroupBox();
             this.donationBox = new System.Windows.Forms.CheckBox();
             this.activeDonationLabel = new System.Windows.Forms.Label();
@@ -76,8 +78,6 @@
             this.defaultMovieCfgBox = new System.Windows.Forms.TextBox();
             this.defaultMovieLabel = new System.Windows.Forms.Label();
             this.configTabCtrl = new System.Windows.Forms.TabControl();
-            this.runAtStartBox = new System.Windows.Forms.CheckBox();
-            this.runAtStartLabel = new System.Windows.Forms.Label();
             this.movieCfg.SuspendLayout();
             this.twitchAlertCfg.SuspendLayout();
             this.twitchAPICfg.SuspendLayout();
@@ -426,6 +426,24 @@
             this.generalCfg.Text = "General";
             this.generalCfg.UseVisualStyleBackColor = true;
             // 
+            // runAtStartLabel
+            // 
+            this.runAtStartLabel.AutoSize = true;
+            this.runAtStartLabel.Location = new System.Drawing.Point(257, 65);
+            this.runAtStartLabel.Name = "runAtStartLabel";
+            this.runAtStartLabel.Size = new System.Drawing.Size(65, 13);
+            this.runAtStartLabel.TabIndex = 7;
+            this.runAtStartLabel.Text = "Run At Start";
+            // 
+            // runAtStartBox
+            // 
+            this.runAtStartBox.AutoSize = true;
+            this.runAtStartBox.Location = new System.Drawing.Point(328, 65);
+            this.runAtStartBox.Name = "runAtStartBox";
+            this.runAtStartBox.Size = new System.Drawing.Size(14, 13);
+            this.runAtStartBox.TabIndex = 6;
+            this.runAtStartBox.UseVisualStyleBackColor = true;
+            // 
             // activeAlertBox
             // 
             this.activeAlertBox.Controls.Add(this.donationBox);
@@ -448,9 +466,10 @@
             this.donationBox.AutoSize = true;
             this.donationBox.Location = new System.Drawing.Point(196, 37);
             this.donationBox.Name = "donationBox";
-            this.donationBox.Size = new System.Drawing.Size(15, 14);
+            this.donationBox.Size = new System.Drawing.Size(14, 13);
             this.donationBox.TabIndex = 7;
             this.donationBox.UseVisualStyleBackColor = true;
+            this.donationBox.CheckedChanged += new System.EventHandler(this.donationBox_CheckedChanged);
             // 
             // activeDonationLabel
             // 
@@ -466,9 +485,10 @@
             this.hostBox.AutoSize = true;
             this.hostBox.Location = new System.Drawing.Point(196, 15);
             this.hostBox.Name = "hostBox";
-            this.hostBox.Size = new System.Drawing.Size(15, 14);
+            this.hostBox.Size = new System.Drawing.Size(14, 13);
             this.hostBox.TabIndex = 5;
             this.hostBox.UseVisualStyleBackColor = true;
+            this.hostBox.CheckedChanged += new System.EventHandler(this.hostBox_CheckedChanged);
             // 
             // activeHostLabel
             // 
@@ -484,18 +504,20 @@
             this.subscriberBox.AutoSize = true;
             this.subscriberBox.Location = new System.Drawing.Point(98, 37);
             this.subscriberBox.Name = "subscriberBox";
-            this.subscriberBox.Size = new System.Drawing.Size(15, 14);
+            this.subscriberBox.Size = new System.Drawing.Size(14, 13);
             this.subscriberBox.TabIndex = 3;
             this.subscriberBox.UseVisualStyleBackColor = true;
+            this.subscriberBox.CheckedChanged += new System.EventHandler(this.subscriberBox_CheckedChanged);
             // 
             // followerBox
             // 
             this.followerBox.AutoSize = true;
             this.followerBox.Location = new System.Drawing.Point(98, 16);
             this.followerBox.Name = "followerBox";
-            this.followerBox.Size = new System.Drawing.Size(15, 14);
+            this.followerBox.Size = new System.Drawing.Size(14, 13);
             this.followerBox.TabIndex = 2;
             this.followerBox.UseVisualStyleBackColor = true;
+            this.followerBox.CheckedChanged += new System.EventHandler(this.followerBox_CheckedChanged);
             // 
             // activeSubscriberLabel
             // 
@@ -564,33 +586,17 @@
             this.configTabCtrl.Size = new System.Drawing.Size(407, 269);
             this.configTabCtrl.TabIndex = 25;
             // 
-            // runAtStartBox
-            // 
-            this.runAtStartBox.AutoSize = true;
-            this.runAtStartBox.Location = new System.Drawing.Point(328, 65);
-            this.runAtStartBox.Name = "runAtStartBox";
-            this.runAtStartBox.Size = new System.Drawing.Size(15, 14);
-            this.runAtStartBox.TabIndex = 6;
-            this.runAtStartBox.UseVisualStyleBackColor = true;
-            // 
-            // runAtStartLabel
-            // 
-            this.runAtStartLabel.AutoSize = true;
-            this.runAtStartLabel.Location = new System.Drawing.Point(257, 65);
-            this.runAtStartLabel.Name = "runAtStartLabel";
-            this.runAtStartLabel.Size = new System.Drawing.Size(65, 13);
-            this.runAtStartLabel.TabIndex = 7;
-            this.runAtStartLabel.Text = "Run At Start";
-            // 
             // ConfigurationWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(427, 286);
+            this.ClientSize = new System.Drawing.Size(431, 295);
             this.Controls.Add(this.configTabCtrl);
+            this.MaximizeBox = false;
             this.Name = "ConfigurationWindow";
             this.Text = "Twitchdouken - Configuration";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigurationWindow_FormClosing);
+            this.Load += new System.EventHandler(this.ConfigurationWindow_Load);
             this.movieCfg.ResumeLayout(false);
             this.movieCfg.PerformLayout();
             this.twitchAlertCfg.ResumeLayout(false);
