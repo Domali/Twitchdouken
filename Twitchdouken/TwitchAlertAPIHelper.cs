@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Net;
 using System.IO;
 using Newtonsoft.Json;
@@ -12,34 +12,38 @@ namespace Twitchdouken
 {
     class TwitchAlertAPIHelper
     {
-        private string ta_api;
-        private string ta_access_token;
-        private List<Donation> donation_list;
-        private List<Donation> new_donation_queue;
-        private bool run_thread = false;
-        private int update_sleep_time;
-        private float session_donation_total;
-        public TwitchAlertAPIHelper(string ta_access_token)
+        private string taAPI;
+        private string taAccessToken;
+
+        private List<Donation> donationList;
+        private List<Donation> donationQueue;
+
+        private bool    running = false;
+        private int     updateSleepTime;
+        private float   donationTotal;
+
+        public TwitchAlertAPIHelper(string accessToken)
         {
-            this.ta_api = "http://www.twitchalerts.com/api/donations?access_token=";
-            this.ta_access_token = ta_access_token;
-            this.new_donation_queue = new List<Donation>();
-            this.update_sleep_time = 20;//How many seconds between updates
-            this.donation_list = new List<Donation>();
-            this.session_donation_total = 0;
+            taAPI = "http://www.twitchalerts.com/api/donations?access_token=";
+            taAccessToken = accessToken;
+
+            donationQueue = new List<Donation>();
+            updateSleepTime = 20;    //How many seconds between updates
+            donationList = new List<Donation>();
+            donationTotal = 0;
         }
 
 
-        private string PollAPI()
+        private string pollAPI()
         {
-            
             bool keepTrying = true;
             string responseFromServer = "";
+
             while (keepTrying)
             {
                 try
                 {
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.ta_api + this.ta_access_token);
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.taAPI + this.taAccessToken);
                     WebResponse response = request.GetResponse();
                     Stream dataStream = response.GetResponseStream();
                     StreamReader reader = new StreamReader(dataStream);
@@ -49,7 +53,7 @@ namespace Twitchdouken
                 catch
                 {
                     Console.WriteLine("Webrequest failed, waiting and trying again.");
-                    System.Threading.Thread.Sleep(4000);
+                    Thread.Sleep(4000);
                 }
             }
             return responseFromServer;
@@ -57,106 +61,111 @@ namespace Twitchdouken
 
         public void runAsThread()
         {
-            this.run_thread = true;
-            this.syncDonationList();
+            running = true;
+            syncDonationList();
+
             while (true)
             {
-                this.findNewDonations();
-                for (int x = 0; x < this.update_sleep_time; x++ )
+                findNewDonations();
+
+                for (int x = 0; x < this.updateSleepTime; x++)
                 {
-                    System.Threading.Thread.Sleep(1000);
-                    if(!this.run_thread)
+                    Thread.Sleep(1000);
+                    if (!running)
                     {
                         break;
                     }
                 }
-                if(!this.run_thread)
+
+                if (!this.running)
                 {
                     break;
                 }
-                    
             }
-            return;
         }
 
         public void stopThread()
         {
-            this.run_thread = false;
+            running = false;
         }
+
         public float getDonationTotal()
         {
-            return this.session_donation_total;
+            return donationTotal;
         }
 
         public bool newDonationCheck()
         {
-            return this.new_donation_queue.Any();
+            return donationQueue.Any();
         }
 
         public Donation getDonation()
         {
             Donation donation;
-            lock(this.new_donation_queue)
+
+            lock(donationQueue)
             {
-                
-                donation = this.new_donation_queue.ElementAt(0);
-                this.new_donation_queue.RemoveAt(0);
+                donation = donationQueue.ElementAt(0);
+                donationQueue.RemoveAt(0);
             }
             return donation;
         }
         
-        private void  queueDonation(Donation donation)
+        private void queueDonation(Donation donation)
         {
-            lock(this.new_donation_queue)
+            lock(donationQueue)
             {
-                this.new_donation_queue.Add(donation); 
+                donationQueue.Add(donation); 
             }
         }
         private void syncDonationList()
         {
-            this.donation_list = this.getDonations();
-            return;
+            donationList = getDonations();
         }
 
         private List<Donation> getDonations()
         {
-            List<Donation> donation_list = new List<Donation>();
-            string data = this.PollAPI();
-            JObject parsed_data = JObject.Parse(data);
-            IList<JToken> results = parsed_data["donations"].Children().ToList();
+            List<Donation> donations = new List<Donation>();
+
+            string data = pollAPI();
+            JObject parsedData = JObject.Parse(data);
+
+            IList<JToken> results = parsedData["donations"].Children().ToList();
+
             foreach (JToken result in results)
             {
-                Donation donation = new Donation();
-                donation.name = (string)result["donator"]["name"];
-                donation.comment = (string)result["message"];
-                donation.amount = (string)result["amount"];
-                donation.id = (string)result["id"];
-                donation_list.Add(donation);
+                Donation d = new Donation();
+
+                d.name = (string)result["donator"]["name"];
+                d.comment = (string)result["message"];
+                d.amount = (string)result["amount"];
+                d.id = (string)result["id"];
+
+                donations.Add(d);
             }
-            return donation_list;
+            return donations;
         }
 
         private void findNewDonations()
         {
+            List<Donation> donations = getDonations();
 
-            List<Donation> new_donation_list = this.getDonations();
-            foreach (Donation donation in new_donation_list)
+            foreach (Donation donation in donations)
             {
-                bool found = this.donation_list.Any(x => x.id == donation.id);
+                bool found = donationList.Any(x => x.id == donation.id);
+
                 if (!found)
                 {
-                    this.session_donation_total += float.Parse(donation.amount);
-                    this.donation_list.Add(donation);
-                    this.queueDonation(donation);
+                    donationTotal += float.Parse(donation.amount);
+                    donationList.Add(donation);
+                    queueDonation(donation);
                 }
             }
-            return;
         }
     }
-
     struct Donation
     {
-        public string name { get; set; }
+        public string name;
         public string comment;
         public string amount;
         public string id;

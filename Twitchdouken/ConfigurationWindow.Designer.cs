@@ -141,6 +141,7 @@
             // 
             this.followerTxtBox.Location = new System.Drawing.Point(6, 21);
             this.followerTxtBox.Name = "followerTxtBox";
+            this.followerTxtBox.ReadOnly = true;
             this.followerTxtBox.Size = new System.Drawing.Size(304, 20);
             this.followerTxtBox.TabIndex = 1;
             // 
@@ -148,6 +149,7 @@
             // 
             this.subscriberTxtBox.Location = new System.Drawing.Point(6, 136);
             this.subscriberTxtBox.Name = "subscriberTxtBox";
+            this.subscriberTxtBox.ReadOnly = true;
             this.subscriberTxtBox.Size = new System.Drawing.Size(304, 20);
             this.subscriberTxtBox.TabIndex = 10;
             // 
@@ -163,6 +165,7 @@
             // 
             this.donationTxtBox.Location = new System.Drawing.Point(6, 97);
             this.donationTxtBox.Name = "donationTxtBox";
+            this.donationTxtBox.ReadOnly = true;
             this.donationTxtBox.Size = new System.Drawing.Size(304, 20);
             this.donationTxtBox.TabIndex = 7;
             // 
@@ -170,6 +173,7 @@
             // 
             this.hostTxtBox.Location = new System.Drawing.Point(6, 58);
             this.hostTxtBox.Name = "hostTxtBox";
+            this.hostTxtBox.ReadOnly = true;
             this.hostTxtBox.Size = new System.Drawing.Size(304, 20);
             this.hostTxtBox.TabIndex = 4;
             // 
@@ -177,9 +181,9 @@
             // 
             this.newMovieCfgBtn.Location = new System.Drawing.Point(6, 212);
             this.newMovieCfgBtn.Name = "newMovieCfgBtn";
-            this.newMovieCfgBtn.Size = new System.Drawing.Size(75, 23);
+            this.newMovieCfgBtn.Size = new System.Drawing.Size(125, 23);
             this.newMovieCfgBtn.TabIndex = 21;
-            this.newMovieCfgBtn.Text = "New Config";
+            this.newMovieCfgBtn.Text = "New Movie Config.";
             this.newMovieCfgBtn.UseVisualStyleBackColor = true;
             this.newMovieCfgBtn.Click += new System.EventHandler(this.newMovieCfgBtn_Click);
             // 
@@ -262,11 +266,11 @@
             // 
             // saveMovieCfgBtn
             // 
-            this.saveMovieCfgBtn.Location = new System.Drawing.Point(168, 212);
+            this.saveMovieCfgBtn.Location = new System.Drawing.Point(268, 212);
             this.saveMovieCfgBtn.Name = "saveMovieCfgBtn";
-            this.saveMovieCfgBtn.Size = new System.Drawing.Size(75, 23);
+            this.saveMovieCfgBtn.Size = new System.Drawing.Size(125, 23);
             this.saveMovieCfgBtn.TabIndex = 17;
-            this.saveMovieCfgBtn.Text = "Save Config";
+            this.saveMovieCfgBtn.Text = "Save Movie Config.";
             this.saveMovieCfgBtn.UseVisualStyleBackColor = true;
             this.saveMovieCfgBtn.Click += new System.EventHandler(this.saveMovieCfgBtn_Click);
             // 
@@ -291,11 +295,11 @@
             // 
             // loadMovieCfgBtn
             // 
-            this.loadMovieCfgBtn.Location = new System.Drawing.Point(87, 212);
+            this.loadMovieCfgBtn.Location = new System.Drawing.Point(137, 212);
             this.loadMovieCfgBtn.Name = "loadMovieCfgBtn";
-            this.loadMovieCfgBtn.Size = new System.Drawing.Size(75, 23);
+            this.loadMovieCfgBtn.Size = new System.Drawing.Size(125, 23);
             this.loadMovieCfgBtn.TabIndex = 16;
-            this.loadMovieCfgBtn.Text = "Load Config";
+            this.loadMovieCfgBtn.Text = "Load Movie Config.";
             this.loadMovieCfgBtn.UseVisualStyleBackColor = true;
             this.loadMovieCfgBtn.Click += new System.EventHandler(this.loadMovieCfgBtn_Click);
             // 
@@ -429,16 +433,16 @@
             // runAtStartLabel
             // 
             this.runAtStartLabel.AutoSize = true;
-            this.runAtStartLabel.Location = new System.Drawing.Point(257, 65);
+            this.runAtStartLabel.Location = new System.Drawing.Point(263, 65);
             this.runAtStartLabel.Name = "runAtStartLabel";
-            this.runAtStartLabel.Size = new System.Drawing.Size(65, 13);
+            this.runAtStartLabel.Size = new System.Drawing.Size(68, 13);
             this.runAtStartLabel.TabIndex = 7;
-            this.runAtStartLabel.Text = "Run At Start";
+            this.runAtStartLabel.Text = "Run At Start:";
             // 
             // runAtStartBox
             // 
             this.runAtStartBox.AutoSize = true;
-            this.runAtStartBox.Location = new System.Drawing.Point(328, 65);
+            this.runAtStartBox.Location = new System.Drawing.Point(331, 66);
             this.runAtStartBox.Name = "runAtStartBox";
             this.runAtStartBox.Size = new System.Drawing.Size(14, 13);
             this.runAtStartBox.TabIndex = 6;
@@ -459,7 +463,7 @@
             this.activeAlertBox.Size = new System.Drawing.Size(222, 60);
             this.activeAlertBox.TabIndex = 5;
             this.activeAlertBox.TabStop = false;
-            this.activeAlertBox.Text = "Active Alerts";
+            this.activeAlertBox.Text = "Display Alert Data";
             // 
             // donationBox
             // 
@@ -539,7 +543,7 @@
             // 
             // saveAllBtn
             // 
-            this.saveAllBtn.Location = new System.Drawing.Point(238, 87);
+            this.saveAllBtn.Location = new System.Drawing.Point(238, 86);
             this.saveAllBtn.Name = "saveAllBtn";
             this.saveAllBtn.Size = new System.Drawing.Size(105, 23);
             this.saveAllBtn.TabIndex = 3;
@@ -593,6 +597,7 @@
             this.ClientSize = new System.Drawing.Size(431, 295);
             this.Controls.Add(this.configTabCtrl);
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ConfigurationWindow";
             this.Text = "Twitchdouken - Configuration";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigurationWindow_FormClosing);
