@@ -337,7 +337,7 @@ namespace Twitchdouken
                     WebResponse response = request.GetResponse();
                     Stream dataStream = response.GetResponseStream();
                     StreamReader reader = new StreamReader(dataStream);
-                    responseFromServer = reader.ReadToEnd();  
+                    responseFromServer = reader.ReadToEnd();
                     keepTrying = false;
                 }
                 catch
