@@ -31,7 +31,7 @@ namespace Twitchdouken
             InitializeComponent();
 
             alertWindow = new AlertWindow(this);
-            configWindow = new ConfigurationWindow(this);
+            configWindow = new ConfigurationWindow(this, alertWindow);
 
             alertWindow.Show();
             donationBox.DisplayMember = "name";
@@ -204,6 +204,7 @@ namespace Twitchdouken
 
                 twitchHelper.updateFollowers = configWindow.followerBox.Checked;
                 twitchHelper.updateSubscribers = configWindow.subscriberBox.Checked;
+
                 TwitchIRCHelper.update_hosts = configWindow.hostBox.Checked;
                 TwitchIRCHelper.update_subscribers = configWindow.subscriberBox.Checked;
 

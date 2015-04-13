@@ -14,21 +14,25 @@ namespace Twitchdouken
 {
     public partial class ConfigurationWindow : Form
     {
-        private Twitchdouken parent;
+        private Twitchdouken    parent;
+        private AlertWindow     alertWindow;
 
         private string configFilePath;
         private bool initialized;
 
-        public ConfigurationWindow(Twitchdouken parent)
+        public ConfigurationWindow(Twitchdouken parent, AlertWindow alertWindow)
         {
             InitializeComponent();
+
+            this.parent = parent;
+            this.alertWindow = alertWindow;
 
             configFilePath = @"settings.cfg";
 
             initialized = false;
-            loadTotalConfig();
 
-            this.parent = parent;
+            loadTotalConfig();
+            updateAlertChromaKey();
         }
 
         private void setMovie(TextBox textbox)
@@ -37,12 +41,11 @@ namespace Twitchdouken
 
             openFileDialog.InitialDirectory = "c:\\";
             openFileDialog.Filter = "SWF Movie|*.swf";
-            openFileDialog.ShowDialog();
 
-            if (openFileDialog.FileName != "")
-            {
+            DialogResult result = openFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
                 textbox.Text = openFileDialog.FileName;
-            }
         }
 
         private void followerBtn_Click(object sender, EventArgs e)
@@ -99,10 +102,10 @@ namespace Twitchdouken
 
             saveFileDialog.Filter = "Configuration File|*.cfg";
             saveFileDialog.Title = "Configuration File Name";
-            saveFileDialog.ShowDialog();
 
-            if (saveFileDialog.FileName != "")
-            {
+            DialogResult result = saveFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK) {
                 movieConfigBox.Text = saveFileDialog.FileName;
                 subscriberTxtBox.Text = "";
                 donationTxtBox.Text = "";
@@ -171,12 +174,11 @@ namespace Twitchdouken
             openFileDialog.InitialDirectory = "c:\\";
             openFileDialog.Filter = "Configuration File|*.cfg";
             openFileDialog.Title = "Configuration File Name";
-            openFileDialog.ShowDialog();
+            
+            DialogResult result = openFileDialog.ShowDialog();
 
-            if (openFileDialog.FileName != "")
-            {
+            if (result == DialogResult.OK)
                 loadMovieConfigurationFile(openFileDialog.FileName);
-            }
         }
 
         private JObject generateMovieConfig()
@@ -228,6 +230,7 @@ namespace Twitchdouken
                 general_config = new
                 {
                     default_movie_config = defaultMovieCfgBox.Text,
+                    movie_chroma_key = colorToHex(lblChromaKey.BackColor),
                     play_followers = followerBox.Checked,
                     play_subscribers = subscriberBox.Checked,
                     play_donations = donationBox.Checked,
@@ -272,6 +275,7 @@ namespace Twitchdouken
                     hostBox.Checked = (bool)token["general_config"]["play_hosts"];
                     runAtStartBox.Checked = (bool)token["general_config"]["run_at_start"];
                     defaultMovieCfgBox.Text = (string)token["general_config"]["default_movie_config"];
+                    lblChromaKey.BackColor = hexToColor((string)token["general_config"]["movie_chroma_key"]);
 
                     channelBox.Text = (string)token["twitch_config"]["channel_name"];
                     ircOAuthBox.Text = (string)token["twitch_config"]["irc_oauth"];
@@ -319,9 +323,10 @@ namespace Twitchdouken
             openFileDialog.InitialDirectory = "c:\\";
             openFileDialog.Filter = "Configuration File|*.cfg";
             openFileDialog.Title = "Configuration File Name";
-            openFileDialog.ShowDialog();
 
-            if (openFileDialog.FileName != "")
+            DialogResult result = openFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
                 defaultMovieCfgBox.Text = openFileDialog.FileName;
         }
 
@@ -352,6 +357,35 @@ namespace Twitchdouken
         private void ConfigurationWindow_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
+        }
+
+        private void btnSetChromaKey_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+
+            DialogResult result = colorDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                lblChromaKey.BackColor = colorDialog.Color;
+                updateAlertChromaKey();
+            }
+        }
+
+        private string colorToHex(Color color)
+        {
+            return color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+        }
+
+        private Color hexToColor(string hex)
+        {
+            return ColorTranslator.FromHtml("#" + hex);
+        }
+
+        private void updateAlertChromaKey()
+        {
+            this.alertWindow.BackColor = lblChromaKey.BackColor;
+            this.alertWindow.flashAlert.BGColor = colorToHex(lblChromaKey.BackColor);
         }
     }
 }
