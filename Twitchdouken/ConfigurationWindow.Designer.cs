@@ -62,6 +62,9 @@
             this.ircOAuthLabel = new System.Windows.Forms.Label();
             this.channelLabel = new System.Windows.Forms.Label();
             this.generalCfg = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnSetChromaKey = new System.Windows.Forms.Button();
+            this.lblChromaKey = new System.Windows.Forms.Label();
             this.runAtStartLabel = new System.Windows.Forms.Label();
             this.runAtStartBox = new System.Windows.Forms.CheckBox();
             this.activeAlertBox = new System.Windows.Forms.GroupBox();
@@ -82,6 +85,7 @@
             this.twitchAlertCfg.SuspendLayout();
             this.twitchAPICfg.SuspendLayout();
             this.generalCfg.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.activeAlertBox.SuspendLayout();
             this.configTabCtrl.SuspendLayout();
             this.SuspendLayout();
@@ -415,6 +419,7 @@
             // 
             // generalCfg
             // 
+            this.generalCfg.Controls.Add(this.groupBox1);
             this.generalCfg.Controls.Add(this.runAtStartLabel);
             this.generalCfg.Controls.Add(this.runAtStartBox);
             this.generalCfg.Controls.Add(this.activeAlertBox);
@@ -429,6 +434,36 @@
             this.generalCfg.TabIndex = 1;
             this.generalCfg.Text = "General";
             this.generalCfg.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnSetChromaKey);
+            this.groupBox1.Controls.Add(this.lblChromaKey);
+            this.groupBox1.Location = new System.Drawing.Point(10, 172);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(112, 65);
+            this.groupBox1.TabIndex = 8;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Alert Chroma Key";
+            // 
+            // btnSetChromaKey
+            // 
+            this.btnSetChromaKey.Location = new System.Drawing.Point(60, 35);
+            this.btnSetChromaKey.Name = "btnSetChromaKey";
+            this.btnSetChromaKey.Size = new System.Drawing.Size(44, 23);
+            this.btnSetChromaKey.TabIndex = 3;
+            this.btnSetChromaKey.Text = "Set";
+            this.btnSetChromaKey.UseVisualStyleBackColor = true;
+            this.btnSetChromaKey.Click += new System.EventHandler(this.btnSetChromaKey_Click);
+            // 
+            // lblChromaKey
+            // 
+            this.lblChromaKey.BackColor = System.Drawing.Color.White;
+            this.lblChromaKey.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblChromaKey.Location = new System.Drawing.Point(6, 16);
+            this.lblChromaKey.Name = "lblChromaKey";
+            this.lblChromaKey.Size = new System.Drawing.Size(48, 42);
+            this.lblChromaKey.TabIndex = 0;
             // 
             // runAtStartLabel
             // 
@@ -610,6 +645,7 @@
             this.twitchAPICfg.PerformLayout();
             this.generalCfg.ResumeLayout(false);
             this.generalCfg.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             this.activeAlertBox.ResumeLayout(false);
             this.activeAlertBox.PerformLayout();
             this.configTabCtrl.ResumeLayout(false);
@@ -669,6 +705,9 @@
         internal System.Windows.Forms.CheckBox followerBox;
         private System.Windows.Forms.Label runAtStartLabel;
         internal System.Windows.Forms.CheckBox runAtStartBox;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button btnSetChromaKey;
+        public System.Windows.Forms.Label lblChromaKey;
 
     }
 }
