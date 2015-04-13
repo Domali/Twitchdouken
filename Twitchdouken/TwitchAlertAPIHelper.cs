@@ -27,9 +27,10 @@ namespace Twitchdouken
             taAPI = "http://www.twitchalerts.com/api/donations?access_token=";
             taAccessToken = token;
 
-            donationQueue = new List<Donation>();
-            updateSleepTime = 20;    //How many seconds between updates
             donationList = new List<Donation>();
+            donationQueue = new List<Donation>();
+
+            updateSleepTime = 20;    //How many seconds between updates
             donationTotal = 0;
         }
 
@@ -162,7 +163,7 @@ namespace Twitchdouken
     }
     struct Donation
     {
-        public string name;
+        public string name { get; set; }
         public string comment;
         public string amount;
         public string id;
