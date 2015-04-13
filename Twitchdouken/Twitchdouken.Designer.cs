@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Twitchdouken));
             this.cfgBtn = new System.Windows.Forms.Button();
             this.alertBtn = new System.Windows.Forms.Button();
             this.followBox = new System.Windows.Forms.ListBox();
@@ -53,11 +54,12 @@
             this.commentBox = new System.Windows.Forms.TextBox();
             this.UIUpdater = new System.Windows.Forms.Timer(this.components);
             this.startStopBtn = new System.Windows.Forms.Button();
+            this.NotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
             // cfgBtn
             // 
-            this.cfgBtn.Location = new System.Drawing.Point(14, 308);
+            this.cfgBtn.Location = new System.Drawing.Point(12, 308);
             this.cfgBtn.Name = "cfgBtn";
             this.cfgBtn.Size = new System.Drawing.Size(119, 23);
             this.cfgBtn.TabIndex = 0;
@@ -173,7 +175,7 @@
             this.followerChkBox.AutoSize = true;
             this.followerChkBox.Location = new System.Drawing.Point(160, 292);
             this.followerChkBox.Name = "followerChkBox";
-            this.followerChkBox.Size = new System.Drawing.Size(15, 14);
+            this.followerChkBox.Size = new System.Drawing.Size(14, 13);
             this.followerChkBox.TabIndex = 13;
             this.followerChkBox.UseVisualStyleBackColor = true;
             // 
@@ -182,16 +184,16 @@
             this.subscriberChkBox.AutoSize = true;
             this.subscriberChkBox.Location = new System.Drawing.Point(329, 291);
             this.subscriberChkBox.Name = "subscriberChkBox";
-            this.subscriberChkBox.Size = new System.Drawing.Size(15, 14);
+            this.subscriberChkBox.Size = new System.Drawing.Size(14, 13);
             this.subscriberChkBox.TabIndex = 14;
             this.subscriberChkBox.UseVisualStyleBackColor = true;
             // 
             // hostChkBox
             // 
             this.hostChkBox.AutoSize = true;
-            this.hostChkBox.Location = new System.Drawing.Point(498, 292);
+            this.hostChkBox.Location = new System.Drawing.Point(498, 291);
             this.hostChkBox.Name = "hostChkBox";
-            this.hostChkBox.Size = new System.Drawing.Size(15, 14);
+            this.hostChkBox.Size = new System.Drawing.Size(14, 13);
             this.hostChkBox.TabIndex = 15;
             this.hostChkBox.UseVisualStyleBackColor = true;
             // 
@@ -200,7 +202,7 @@
             this.donationChkBox.AutoSize = true;
             this.donationChkBox.Location = new System.Drawing.Point(667, 291);
             this.donationChkBox.Name = "donationChkBox";
-            this.donationChkBox.Size = new System.Drawing.Size(15, 14);
+            this.donationChkBox.Size = new System.Drawing.Size(14, 13);
             this.donationChkBox.TabIndex = 16;
             this.donationChkBox.UseVisualStyleBackColor = true;
             // 
@@ -259,11 +261,21 @@
             this.startStopBtn.UseVisualStyleBackColor = true;
             this.startStopBtn.Click += new System.EventHandler(this.startStopBtn_Click);
             // 
+            // NotifyIcon
+            // 
+            this.NotifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.NotifyIcon.BalloonTipText = "MotoDouken!";
+            this.NotifyIcon.BalloonTipTitle = "DomDouken!";
+            this.NotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("NotifyIcon.Icon")));
+            this.NotifyIcon.Text = "TwitchDouken!";
+            this.NotifyIcon.Visible = true;
+            this.NotifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon_MouseDoubleClick);
+            // 
             // Twitchdouken
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(857, 337);
+            this.ClientSize = new System.Drawing.Size(864, 344);
             this.Controls.Add(this.startStopBtn);
             this.Controls.Add(this.commentBox);
             this.Controls.Add(this.commentLabel);
@@ -287,9 +299,11 @@
             this.Controls.Add(this.followBox);
             this.Controls.Add(this.alertBtn);
             this.Controls.Add(this.cfgBtn);
+            this.MaximizeBox = false;
             this.Name = "Twitchdouken";
             this.Text = "Twitchdouken";
             this.Load += new System.EventHandler(this.Twitchdouken_Load);
+            this.SizeChanged += new System.EventHandler(this.Twitchdouken_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -299,7 +313,6 @@
 
         private System.Windows.Forms.Button cfgBtn;
         private System.Windows.Forms.Button alertBtn;
-        private System.Windows.Forms.ListBox followBox;
         private System.Windows.Forms.Label followLabel;
         private System.Windows.Forms.Label followTimeLabel;
         private System.Windows.Forms.ListBox subscriberBox;
@@ -321,6 +334,8 @@
         private System.Windows.Forms.TextBox commentBox;
         private System.Windows.Forms.Timer UIUpdater;
         internal System.Windows.Forms.Button startStopBtn;
+        public System.Windows.Forms.ListBox followBox;
+        private System.Windows.Forms.NotifyIcon NotifyIcon;
 
     }
 }
