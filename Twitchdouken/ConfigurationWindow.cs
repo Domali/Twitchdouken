@@ -27,8 +27,6 @@ namespace Twitchdouken
 
             initialized = false;
 
-            toggleAlertTabEnabled();
-
             loadTotalConfig();
             updateAlertChromaKey();
         }
@@ -112,7 +110,6 @@ namespace Twitchdouken
 
                 chromaKeySample.BackColor = Color.White;
                 updateAlertChromaKey();
-                toggleAlertTabEnabled();
             }
         }
 
@@ -147,7 +144,8 @@ namespace Twitchdouken
                     hostTxtBox.Text = (string)token["movie_paths"]["host_movie"];
                     donationTxtBox.Text = (string)token["movie_paths"]["donation_movie"];
 
-                    chromaKeySample.BackColor = hexToColor((string)token["movie_config"]["chroma_key"]);
+                    chromaHexBox.Text = (string)token["movie_config"]["chroma_key"];
+                    chromaKeySample.BackColor = hexToColor(chromaHexBox.Text);                    
                     int width = (int)token["movie_config"]["width"];
                     int height = (int)token["movie_config"]["height"];
 
@@ -158,7 +156,6 @@ namespace Twitchdouken
                 }
 
                 movieConfigBox.Text = filename;
-                toggleAlertTabEnabled();
             }
             catch (System.IO.DirectoryNotFoundException)
             {
@@ -194,7 +191,6 @@ namespace Twitchdouken
             if (result == DialogResult.OK)
             {
                 loadMovieConfigurationFile(openFileDialog.FileName);
-                toggleAlertTabEnabled();
             }
         }
 
@@ -220,8 +216,8 @@ namespace Twitchdouken
                 movie_config = new
                 {
                     chroma_key = colorToHex(chromaKeySample.BackColor),
-                    width = 256,
-                    height = 256
+                    width = (int)alertWidthNum.Value,
+                    height = (int)alertHeightNum.Value
                 }
             });
             return config;
@@ -440,37 +436,6 @@ namespace Twitchdouken
         private void alertResizeBtn_Click(object sender, EventArgs e)
         {
             this.alertWindow.windowResize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
-        }
-
-        private void toggleAlertTabEnabled()
-        {
-            movieConfigBox.Enabled = !movieConfigBox.Enabled;
-
-            chromaHexBox.Enabled = !chromaHexBox.Enabled;
-            chromaTestBtn.Enabled = !chromaTestBtn.Enabled;
-            colorPickerBtn.Enabled = !colorPickerBtn.Enabled;
-
-            alertResizeBtn.Enabled = !alertResizeBtn.Enabled;
-            alertHeightNum.Enabled = !alertHeightNum.Enabled;
-            alertWidthNum.Enabled = !alertWidthNum.Enabled;
-
-            saveMovieCfgBtn.Enabled = !saveMovieCfgBtn.Enabled;
-
-            followerTxtBox.Enabled = !followerTxtBox.Enabled;
-            followerBtn.Enabled = !followerBtn.Enabled;
-            testFollowerBtn.Enabled = !testFollowerBtn.Enabled;
-
-            hostTxtBox.Enabled = !hostTxtBox.Enabled;
-            hostBtn.Enabled = !hostBtn.Enabled;
-            testHostBtn.Enabled = !testHostBtn.Enabled;
-
-            donationTxtBox.Enabled = !donationTxtBox.Enabled;
-            donationBtn.Enabled = !donationBtn.Enabled;
-            testDonationBtn.Enabled = !testDonationBtn.Enabled;
-
-            subscriberTxtBox.Enabled = !subscriberTxtBox.Enabled;
-            subscriberBtn.Enabled = !subscriberBtn.Enabled;
-            testSubscriberBtn.Enabled = !testSubscriberBtn.Enabled;
         }
 
         private void alertWidthNum_ValueChanged(object sender, EventArgs e)
