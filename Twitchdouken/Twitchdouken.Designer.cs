@@ -123,7 +123,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 261);
+            this.label1.Location = new System.Drawing.Point(29, 262);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(91, 13);
             this.label1.TabIndex = 18;
@@ -133,7 +133,7 @@
             // 
             this.minViewerHost.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.minViewerHost.InterceptArrowKeys = false;
-            this.minViewerHost.Location = new System.Drawing.Point(103, 259);
+            this.minViewerHost.Location = new System.Drawing.Point(124, 259);
             this.minViewerHost.Name = "minViewerHost";
             this.minViewerHost.ReadOnly = true;
             this.minViewerHost.Size = new System.Drawing.Size(42, 20);

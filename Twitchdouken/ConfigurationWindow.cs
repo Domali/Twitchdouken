@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -30,6 +26,8 @@ namespace Twitchdouken
             configFilePath = @"settings.cfg";
 
             initialized = false;
+
+            toggleAlertTabEnabled();
 
             loadTotalConfig();
             updateAlertChromaKey();
@@ -86,7 +84,7 @@ namespace Twitchdouken
             parent.playHost("Domalix", "9000");
         }
 
-        private void testDonationButton_Click(object sender, EventArgs e)
+        private void testDonationBtn_Click(object sender, EventArgs e)
         {
             parent.playDonation("Domalix", "$5");
         }
@@ -111,6 +109,10 @@ namespace Twitchdouken
                 donationTxtBox.Text = "";
                 hostTxtBox.Text = "";
                 followerTxtBox.Text = "";
+
+                chromaKeySample.BackColor = Color.White;
+                updateAlertChromaKey();
+                toggleAlertTabEnabled();
             }
         }
 
@@ -118,9 +120,14 @@ namespace Twitchdouken
         {
             if (filename != "")
             {
+                JObject config = new JObject();
+
+                config.Merge(generateMoviePaths());
+                config.Merge(generateMovieConfig());
+
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename))
                 {
-                    file.WriteLine(generateMovieConfig().ToString());
+                    file.WriteLine(config.ToString());
                     MessageBox.Show(null, "Movie Configuration file has been saved successfully.", "Movie Configuration", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -133,28 +140,35 @@ namespace Twitchdouken
                 using (System.IO.StreamReader file = new System.IO.StreamReader(filename))
                 {
                     String json = file.ReadToEnd();
-                    JToken token = JObject.Parse(json).SelectToken("movie_config");
+                    JToken token = JObject.Parse(json);
 
-                    string follower = (string)token.SelectToken("follower_movie");
-                    string subscriber = (string)token.SelectToken("subscriber_movie");
-                    string host = (string)token.SelectToken("host_movie");
-                    string donation = (string)token.SelectToken("donation_movie");
+                    followerTxtBox.Text = (string)token["movie_paths"]["follower_movie"];
+                    subscriberTxtBox.Text = (string)token["movie_paths"]["subscriber_movie"];
+                    hostTxtBox.Text = (string)token["movie_paths"]["host_movie"];
+                    donationTxtBox.Text = (string)token["movie_paths"]["donation_movie"];
 
-                    followerTxtBox.Text = follower;
-                    subscriberTxtBox.Text = subscriber;
-                    hostTxtBox.Text = host;
-                    donationTxtBox.Text = donation;
+                    chromaKeySample.BackColor = hexToColor((string)token["movie_config"]["chroma_key"]);
+                    int width = (int)token["movie_config"]["width"];
+                    int height = (int)token["movie_config"]["height"];
+
+                    alertWidthNum.Value = width;
+                    alertHeightNum.Value = height;
+
+                    this.alertWindow.windowResize(width, height);
                 }
 
                 movieConfigBox.Text = filename;
+                toggleAlertTabEnabled();
             }
             catch (System.IO.DirectoryNotFoundException)
             {
                 MessageBox.Show(null, "Movie configuration file not found - please select another file and try again.", "Movie Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                movieConfigBox.Text = "";
             }
             catch (System.IO.FileNotFoundException)
             {
                 MessageBox.Show(null, "Movie configuration file not found - please select another file and try again.", "Movie Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                movieConfigBox.Text = "";
             }
             catch (System.NullReferenceException)
             {
@@ -178,7 +192,25 @@ namespace Twitchdouken
             DialogResult result = openFileDialog.ShowDialog();
 
             if (result == DialogResult.OK)
+            {
                 loadMovieConfigurationFile(openFileDialog.FileName);
+                toggleAlertTabEnabled();
+            }
+        }
+
+        private JObject generateMoviePaths()
+        {
+            JObject config = JObject.FromObject(new
+            {
+                movie_paths = new
+                {
+                    follower_movie = followerTxtBox.Text,
+                    subscriber_movie = subscriberTxtBox.Text,
+                    host_movie = hostTxtBox.Text,
+                    donation_movie = donationTxtBox.Text
+                }
+            });
+            return config;
         }
 
         private JObject generateMovieConfig()
@@ -187,12 +219,10 @@ namespace Twitchdouken
             {
                 movie_config = new
                 {
-                    follower_movie = followerTxtBox.Text,
-                    subscriber_movie = subscriberTxtBox.Text,
-                    host_movie = hostTxtBox.Text,
-                    donation_movie = donationTxtBox.Text
+                    chroma_key = colorToHex(chromaKeySample.BackColor),
+                    width = 256,
+                    height = 256
                 }
-
             });
             return config;
         }
@@ -229,8 +259,7 @@ namespace Twitchdouken
             {
                 general_config = new
                 {
-                    default_movie_config = defaultMovieCfgBox.Text,
-                    movie_chroma_key = colorToHex(lblChromaKey.BackColor),
+                    movie_config = movieConfigBox.Text,
                     play_followers = followerBox.Checked,
                     play_subscribers = subscriberBox.Checked,
                     play_donations = donationBox.Checked,
@@ -239,11 +268,6 @@ namespace Twitchdouken
                 }
             });
             return config;
-        }
-
-        private void defaultMovieCfgBtn_Click(object sender, EventArgs e)
-        {
-            defaultMovieCfgBox.Text = movieConfigBox.Text;
         }
 
         private void saveTotalConfig()
@@ -274,8 +298,7 @@ namespace Twitchdouken
                     donationBox.Checked = (bool)token["general_config"]["play_donations"];
                     hostBox.Checked = (bool)token["general_config"]["play_hosts"];
                     runAtStartBox.Checked = (bool)token["general_config"]["run_at_start"];
-                    defaultMovieCfgBox.Text = (string)token["general_config"]["default_movie_config"];
-                    lblChromaKey.BackColor = hexToColor((string)token["general_config"]["movie_chroma_key"]);
+                    movieConfigBox.Text = (string)token["general_config"]["movie_config"];
 
                     channelBox.Text = (string)token["twitch_config"]["channel_name"];
                     ircOAuthBox.Text = (string)token["twitch_config"]["irc_oauth"];
@@ -283,8 +306,8 @@ namespace Twitchdouken
 
                     TAAccessTokenBox.Text = (string)token["twitch_alert_config"]["ta_access_token"];
 
-                    if (defaultMovieCfgBox.Text != "")
-                        loadMovieConfigurationFile(defaultMovieCfgBox.Text);
+                    if (movieConfigBox.Text != "")
+                        loadMovieConfigurationFile(movieConfigBox.Text);
                 }
 
                 initialized = true;
@@ -316,20 +339,6 @@ namespace Twitchdouken
             saveTotalConfig();
         }
 
-        private void setDefaultMovieBtn_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.InitialDirectory = "c:\\";
-            openFileDialog.Filter = "Configuration File|*.cfg";
-            openFileDialog.Title = "Configuration File Name";
-
-            DialogResult result = openFileDialog.ShowDialog();
-
-            if (result == DialogResult.OK)
-                defaultMovieCfgBox.Text = openFileDialog.FileName;
-        }
-
         private void followerBox_CheckedChanged(object sender, EventArgs e)
         {
             if (initialized)
@@ -359,19 +368,6 @@ namespace Twitchdouken
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
 
-        private void btnSetChromaKey_Click(object sender, EventArgs e)
-        {
-            ColorDialog colorDialog = new ColorDialog();
-
-            DialogResult result = colorDialog.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                lblChromaKey.BackColor = colorDialog.Color;
-                updateAlertChromaKey();
-            }
-        }
-
         private string colorToHex(Color color)
         {
             return color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
@@ -379,13 +375,114 @@ namespace Twitchdouken
 
         private Color hexToColor(string hex)
         {
-            return ColorTranslator.FromHtml("#" + hex);
+            return ColorTranslator.FromHtml("#" + hex.ToUpper());
+        }
+
+        private bool checkHex(string hex)
+        {
+            bool result = true;
+
+            if (hex == "")
+                result = false;
+
+            if (hex.Length < 6)
+            {
+                result = false;
+            }
+            else 
+            {
+                foreach (char c in hex.ToUpper())
+                {
+                    if (c < '0' || c > 'F')
+                        result = false;
+                }
+            }
+
+            if (!result)
+            {
+                MessageBox.Show(null, "The hex value you attempted to enter is null or malformed. Please enter a valid hex value or use the color picker.",
+                    "Invalid Hex Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return false;
+            }
+
+            return true;
         }
 
         private void updateAlertChromaKey()
         {
-            this.alertWindow.BackColor = lblChromaKey.BackColor;
-            this.alertWindow.flashAlert.BGColor = colorToHex(lblChromaKey.BackColor);
+            this.alertWindow.BackColor = chromaKeySample.BackColor;
+            this.alertWindow.flashAlert.BGColor = colorToHex(chromaKeySample.BackColor);
+        }
+
+        private void colorPickerBtn_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+
+            DialogResult result = colorDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                chromaHexBox.Text = colorToHex(colorDialog.Color);
+                chromaKeySample.BackColor = colorDialog.Color;
+            }
+        }
+
+        private void chromaTestBtn_Click(object sender, EventArgs e)
+        {
+            if (checkHex(chromaHexBox.Text))
+            {
+                chromaKeySample.BackColor = hexToColor(chromaHexBox.Text);
+                updateAlertChromaKey();
+            }
+        }
+
+        private void alertResizeBtn_Click(object sender, EventArgs e)
+        {
+            this.alertWindow.windowResize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
+        }
+
+        private void toggleAlertTabEnabled()
+        {
+            movieConfigBox.Enabled = !movieConfigBox.Enabled;
+
+            chromaHexBox.Enabled = !chromaHexBox.Enabled;
+            chromaTestBtn.Enabled = !chromaTestBtn.Enabled;
+            colorPickerBtn.Enabled = !colorPickerBtn.Enabled;
+
+            alertResizeBtn.Enabled = !alertResizeBtn.Enabled;
+            alertHeightNum.Enabled = !alertHeightNum.Enabled;
+            alertWidthNum.Enabled = !alertWidthNum.Enabled;
+
+            saveMovieCfgBtn.Enabled = !saveMovieCfgBtn.Enabled;
+
+            followerTxtBox.Enabled = !followerTxtBox.Enabled;
+            followerBtn.Enabled = !followerBtn.Enabled;
+            testFollowerBtn.Enabled = !testFollowerBtn.Enabled;
+
+            hostTxtBox.Enabled = !hostTxtBox.Enabled;
+            hostBtn.Enabled = !hostBtn.Enabled;
+            testHostBtn.Enabled = !testHostBtn.Enabled;
+
+            donationTxtBox.Enabled = !donationTxtBox.Enabled;
+            donationBtn.Enabled = !donationBtn.Enabled;
+            testDonationBtn.Enabled = !testDonationBtn.Enabled;
+
+            subscriberTxtBox.Enabled = !subscriberTxtBox.Enabled;
+            subscriberBtn.Enabled = !subscriberBtn.Enabled;
+            testSubscriberBtn.Enabled = !testSubscriberBtn.Enabled;
+        }
+
+        private void alertWidthNum_ValueChanged(object sender, EventArgs e)
+        {
+            if (alertWidthNum.Value >= alertWidthNum.Maximum)
+                alertWidthNum.Value = alertWidthNum.Maximum;
+        }
+
+        private void alertHeightNum_ValueChanged(object sender, EventArgs e)
+        {
+            if (alertHeightNum.Value >= alertHeightNum.Maximum)
+                alertHeightNum.Value = alertHeightNum.Maximum;
         }
     }
 }
