@@ -40,15 +40,16 @@
             this.flashAlert.Name = "flashAlert";
             this.flashAlert.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("flashAlert.OcxState")));
             this.flashAlert.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.flashAlert.Size = new System.Drawing.Size(400, 571);
+            this.flashAlert.Size = new System.Drawing.Size(498, 220);
             this.flashAlert.TabIndex = 1;
+            this.flashAlert.Enter += new System.EventHandler(this.flashAlert_Enter);
             // 
             // AlertWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-            this.ClientSize = new System.Drawing.Size(404, 574);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(500, 222);
             this.Controls.Add(this.flashAlert);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;

@@ -106,14 +106,7 @@ namespace Twitchdouken
                 twitchHelper = null;
                 taHelper = null;
 
-                configWindow.channelBox.ReadOnly = false;
-                configWindow.ircOAuthBox.ReadOnly = false;
-                configWindow.subscriberOAuthBox.ReadOnly = false;
-                configWindow.TAAccessTokenBox.ReadOnly = false;
-                configWindow.subscriberBox.Enabled = true;
-                configWindow.followerBox.Enabled = true;
-                configWindow.hostBox.Enabled = true;
-                configWindow.donationBox.Enabled = true;
+                configReadOnlyToggle();
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -219,14 +212,7 @@ namespace Twitchdouken
 
                 UIUpdater.Enabled = true;
 
-                configWindow.channelBox.ReadOnly = true;
-                configWindow.ircOAuthBox.ReadOnly = true;
-                configWindow.subscriberOAuthBox.ReadOnly = true;
-                configWindow.TAAccessTokenBox.ReadOnly = true;
-                configWindow.subscriberBox.Enabled = false;
-                configWindow.followerBox.Enabled = false;
-                configWindow.hostBox.Enabled = false;
-                configWindow.donationBox.Enabled = false;
+                configReadOnlyToggle();
                 
                 menuStart.Text = "&Stop";
                 running = true;
@@ -244,6 +230,18 @@ namespace Twitchdouken
                     TwitchIRCHelper.stopClient();
                 }
             }
+        }
+
+        private void configReadOnlyToggle()
+        {
+            configWindow.channelBox.ReadOnly = !configWindow.channelBox.ReadOnly;
+            configWindow.ircOAuthBox.ReadOnly = !configWindow.ircOAuthBox.ReadOnly;
+            configWindow.subscriberOAuthBox.ReadOnly = !configWindow.subscriberOAuthBox.ReadOnly;
+            configWindow.TAAccessTokenBox.ReadOnly = !configWindow.TAAccessTokenBox.ReadOnly;
+            configWindow.subscriberBox.Enabled = !configWindow.subscriberBox.Enabled;
+            configWindow.followerBox.Enabled = !configWindow.followerBox.Enabled;
+            configWindow.hostBox.Enabled = !configWindow.hostBox.Enabled;
+            configWindow.donationBox.Enabled = !configWindow.donationBox.Enabled;
         }
 
         private void startStopBtn_Click(object sender, EventArgs e)
