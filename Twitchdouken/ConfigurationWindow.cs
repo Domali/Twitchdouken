@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -46,6 +47,11 @@ namespace Twitchdouken
         private void ConfigurationWindow_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
+
+            LinkLabel.Link ircOAuthLink = new LinkLabel.Link();
+
+            ircOAuthLink.LinkData = "http://twitchapps.com/tmi/";
+            linkIrcGetOAuth.Links.Add(ircOAuthLink);
         }
 
         private void ConfigurationWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -84,6 +90,11 @@ namespace Twitchdouken
         {
             if (initialized)
                 parent.updateGUIElements();
+        }
+
+        private void linkIrcGetOAuth_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(e.Link.LinkData as string);
         }
 
         private void movieProfileCmb_SelectedIndexChanged(object sender, EventArgs e)
@@ -362,10 +373,16 @@ namespace Twitchdouken
         {
             try
             {
-                using (StreamReader file = new StreamReader(this.configFilePath))
+                using (StreamReader file = new StreamReader(configFilePath))
                 {
-                    String json = file.ReadToEnd();
+                    string data = file.ReadToEnd();
+
+                    string guid = data.Remove(36, data.Length - 36);
+                    string json = Encryption.Decrypt(data.Remove(0, 36), guid);
+
                     JToken token = JObject.Parse(json);
+
+                    // JToken token = JObject.Parse(data);
 
                     followerBox.Checked = (bool)token["general_config"]["play_followers"];
                     subscriberBox.Checked = (bool)token["general_config"]["play_subscribers"];
@@ -413,9 +430,14 @@ namespace Twitchdouken
             config.Merge(generateTwitchConfig());
             config.Merge(generateTwitchAlertConfig());
 
-            using (StreamWriter file = new StreamWriter(this.configFilePath))
+            using (StreamWriter file = new StreamWriter(configFilePath))
             {
-                file.WriteLine(config.ToString());
+                string guid = Guid.NewGuid().ToString();
+                string data = guid + Encryption.Encrypt(config.ToString(), guid);
+
+                // string data = config.toString();
+
+                file.WriteLine(data);
                 MessageBox.Show(null, "Configuration file has been saved successfully.", "Configuration File", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
