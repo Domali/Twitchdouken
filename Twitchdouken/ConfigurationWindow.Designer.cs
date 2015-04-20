@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.saveMovieCfgBtn = new System.Windows.Forms.Button();
+            this.saveMovieProfilesBtn = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.activeAlertBox = new System.Windows.Forms.GroupBox();
@@ -59,16 +59,17 @@
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.deleteMovieProfileBtn = new System.Windows.Forms.Button();
+            this.renameMovieProfileBtn = new System.Windows.Forms.Button();
+            this.updateMovieProfileBtn = new System.Windows.Forms.Button();
+            this.newMovieProfileBtn = new System.Windows.Forms.Button();
+            this.movieProfileCmb = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.alertHeightNum = new System.Windows.Forms.NumericUpDown();
             this.alertWidthNum = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
-            this.alertResizeBtn = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.loadMovieCfgBtn = new System.Windows.Forms.Button();
-            this.newMovieCfgBtn = new System.Windows.Forms.Button();
-            this.movieConfigBox = new System.Windows.Forms.TextBox();
             this.configuration_label = new System.Windows.Forms.Label();
             this.testChromaKeyBtn = new System.Windows.Forms.GroupBox();
             this.chromaTestBtn = new System.Windows.Forms.Button();
@@ -111,15 +112,15 @@
             this.tabPage6.SuspendLayout();
             this.SuspendLayout();
             // 
-            // saveMovieCfgBtn
+            // saveMovieProfilesBtn
             // 
-            this.saveMovieCfgBtn.Location = new System.Drawing.Point(255, 162);
-            this.saveMovieCfgBtn.Name = "saveMovieCfgBtn";
-            this.saveMovieCfgBtn.Size = new System.Drawing.Size(105, 23);
-            this.saveMovieCfgBtn.TabIndex = 17;
-            this.saveMovieCfgBtn.Text = "Save Configuration";
-            this.saveMovieCfgBtn.UseVisualStyleBackColor = true;
-            this.saveMovieCfgBtn.Click += new System.EventHandler(this.saveMovieCfgBtn_Click);
+            this.saveMovieProfilesBtn.Location = new System.Drawing.Point(306, 24);
+            this.saveMovieProfilesBtn.Name = "saveMovieProfilesBtn";
+            this.saveMovieProfilesBtn.Size = new System.Drawing.Size(53, 21);
+            this.saveMovieProfilesBtn.TabIndex = 17;
+            this.saveMovieProfilesBtn.Text = "Save";
+            this.saveMovieProfilesBtn.UseVisualStyleBackColor = true;
+            this.saveMovieProfilesBtn.Click += new System.EventHandler(this.saveMovieProfilesBtn_Click);
             // 
             // tabControl1
             // 
@@ -320,7 +321,8 @@
             // ircOAuthLabel
             // 
             this.ircOAuthLabel.AutoSize = true;
-            this.ircOAuthLabel.Location = new System.Drawing.Point(8, 50);
+            this.ircOAuthLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ircOAuthLabel.Location = new System.Drawing.Point(7, 49);
             this.ircOAuthLabel.Name = "ircOAuthLabel";
             this.ircOAuthLabel.Size = new System.Drawing.Size(58, 13);
             this.ircOAuthLabel.TabIndex = 12;
@@ -329,7 +331,8 @@
             // channelLabel
             // 
             this.channelLabel.AutoSize = true;
-            this.channelLabel.Location = new System.Drawing.Point(8, 11);
+            this.channelLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.channelLabel.Location = new System.Drawing.Point(7, 11);
             this.channelLabel.Name = "channelLabel";
             this.channelLabel.Size = new System.Drawing.Size(46, 13);
             this.channelLabel.TabIndex = 11;
@@ -357,6 +360,7 @@
             // subscriberOAuthLabel
             // 
             this.subscriberOAuthLabel.AutoSize = true;
+            this.subscriberOAuthLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.subscriberOAuthLabel.Location = new System.Drawing.Point(7, 11);
             this.subscriberOAuthLabel.Name = "subscriberOAuthLabel";
             this.subscriberOAuthLabel.Size = new System.Drawing.Size(90, 13);
@@ -384,6 +388,7 @@
             // TAAccessTokenLabel
             // 
             this.TAAccessTokenLabel.AutoSize = true;
+            this.TAAccessTokenLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TAAccessTokenLabel.Location = new System.Drawing.Point(7, 7);
             this.TAAccessTokenLabel.Name = "TAAccessTokenLabel";
             this.TAAccessTokenLabel.Size = new System.Drawing.Size(76, 13);
@@ -397,7 +402,7 @@
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Size = new System.Drawing.Size(404, 242);
             this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Alerts";
+            this.tabPage4.Text = "Alert Profiles";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // tabControl2
@@ -412,11 +417,13 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.deleteMovieProfileBtn);
+            this.tabPage5.Controls.Add(this.renameMovieProfileBtn);
+            this.tabPage5.Controls.Add(this.updateMovieProfileBtn);
+            this.tabPage5.Controls.Add(this.newMovieProfileBtn);
+            this.tabPage5.Controls.Add(this.movieProfileCmb);
             this.tabPage5.Controls.Add(this.groupBox1);
-            this.tabPage5.Controls.Add(this.saveMovieCfgBtn);
-            this.tabPage5.Controls.Add(this.loadMovieCfgBtn);
-            this.tabPage5.Controls.Add(this.newMovieCfgBtn);
-            this.tabPage5.Controls.Add(this.movieConfigBox);
+            this.tabPage5.Controls.Add(this.saveMovieProfilesBtn);
             this.tabPage5.Controls.Add(this.configuration_label);
             this.tabPage5.Controls.Add(this.testChromaKeyBtn);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
@@ -427,15 +434,65 @@
             this.tabPage5.Text = "General";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
+            // deleteMovieProfileBtn
+            // 
+            this.deleteMovieProfileBtn.Location = new System.Drawing.Point(277, 51);
+            this.deleteMovieProfileBtn.Name = "deleteMovieProfileBtn";
+            this.deleteMovieProfileBtn.Size = new System.Drawing.Size(82, 21);
+            this.deleteMovieProfileBtn.TabIndex = 30;
+            this.deleteMovieProfileBtn.Text = "Delete";
+            this.deleteMovieProfileBtn.UseVisualStyleBackColor = true;
+            this.deleteMovieProfileBtn.Click += new System.EventHandler(this.deleteMovieProfileBtn_Click);
+            // 
+            // renameMovieProfileBtn
+            // 
+            this.renameMovieProfileBtn.Location = new System.Drawing.Point(188, 51);
+            this.renameMovieProfileBtn.Name = "renameMovieProfileBtn";
+            this.renameMovieProfileBtn.Size = new System.Drawing.Size(82, 21);
+            this.renameMovieProfileBtn.TabIndex = 29;
+            this.renameMovieProfileBtn.Text = "Rename";
+            this.renameMovieProfileBtn.UseVisualStyleBackColor = true;
+            this.renameMovieProfileBtn.Click += new System.EventHandler(this.renameMovieProfileBtn_Click);
+            // 
+            // updateMovieProfileBtn
+            // 
+            this.updateMovieProfileBtn.Location = new System.Drawing.Point(247, 24);
+            this.updateMovieProfileBtn.Name = "updateMovieProfileBtn";
+            this.updateMovieProfileBtn.Size = new System.Drawing.Size(53, 21);
+            this.updateMovieProfileBtn.TabIndex = 28;
+            this.updateMovieProfileBtn.Text = "Update";
+            this.updateMovieProfileBtn.UseVisualStyleBackColor = true;
+            this.updateMovieProfileBtn.Click += new System.EventHandler(this.updateMovieProfileBtn_Click);
+            // 
+            // newMovieProfileBtn
+            // 
+            this.newMovieProfileBtn.Location = new System.Drawing.Point(188, 24);
+            this.newMovieProfileBtn.Name = "newMovieProfileBtn";
+            this.newMovieProfileBtn.Size = new System.Drawing.Size(53, 21);
+            this.newMovieProfileBtn.TabIndex = 27;
+            this.newMovieProfileBtn.Text = "New";
+            this.newMovieProfileBtn.UseVisualStyleBackColor = true;
+            this.newMovieProfileBtn.Click += new System.EventHandler(this.newMovieProfileBtn_Click);
+            // 
+            // movieProfileCmb
+            // 
+            this.movieProfileCmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.movieProfileCmb.FormattingEnabled = true;
+            this.movieProfileCmb.Location = new System.Drawing.Point(9, 24);
+            this.movieProfileCmb.MaxDropDownItems = 100;
+            this.movieProfileCmb.Name = "movieProfileCmb";
+            this.movieProfileCmb.Size = new System.Drawing.Size(172, 21);
+            this.movieProfileCmb.TabIndex = 25;
+            this.movieProfileCmb.SelectedIndexChanged += new System.EventHandler(this.movieProfileCmb_SelectedIndexChanged);
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.alertHeightNum);
             this.groupBox1.Controls.Add(this.alertWidthNum);
             this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.alertResizeBtn);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(188, 60);
+            this.groupBox1.Location = new System.Drawing.Point(188, 97);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(172, 90);
             this.groupBox1.TabIndex = 24;
@@ -444,7 +501,7 @@
             // 
             // alertHeightNum
             // 
-            this.alertHeightNum.Location = new System.Drawing.Point(94, 32);
+            this.alertHeightNum.Location = new System.Drawing.Point(94, 45);
             this.alertHeightNum.Maximum = new decimal(new int[] {
             1080,
             0,
@@ -469,7 +526,7 @@
             // 
             // alertWidthNum
             // 
-            this.alertWidthNum.Location = new System.Drawing.Point(10, 32);
+            this.alertWidthNum.Location = new System.Drawing.Point(10, 45);
             this.alertWidthNum.Maximum = new decimal(new int[] {
             1920,
             0,
@@ -495,27 +552,17 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(81, 34);
+            this.label4.Location = new System.Drawing.Point(81, 47);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(12, 13);
             this.label4.TabIndex = 31;
             this.label4.Text = "x";
             // 
-            // alertResizeBtn
-            // 
-            this.alertResizeBtn.Location = new System.Drawing.Point(48, 58);
-            this.alertResizeBtn.Name = "alertResizeBtn";
-            this.alertResizeBtn.Size = new System.Drawing.Size(73, 23);
-            this.alertResizeBtn.TabIndex = 30;
-            this.alertResizeBtn.Text = "Resize";
-            this.alertResizeBtn.UseVisualStyleBackColor = true;
-            this.alertResizeBtn.Click += new System.EventHandler(this.alertResizeBtn_Click);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(109, 16);
+            this.label3.Location = new System.Drawing.Point(109, 29);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(38, 13);
             this.label3.TabIndex = 29;
@@ -525,48 +572,21 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(26, 16);
+            this.label2.Location = new System.Drawing.Point(26, 29);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 13);
             this.label2.TabIndex = 27;
             this.label2.Text = "Width";
             // 
-            // loadMovieCfgBtn
-            // 
-            this.loadMovieCfgBtn.Location = new System.Drawing.Point(314, 22);
-            this.loadMovieCfgBtn.Name = "loadMovieCfgBtn";
-            this.loadMovieCfgBtn.Size = new System.Drawing.Size(46, 23);
-            this.loadMovieCfgBtn.TabIndex = 23;
-            this.loadMovieCfgBtn.Text = "Load";
-            this.loadMovieCfgBtn.UseVisualStyleBackColor = true;
-            this.loadMovieCfgBtn.Click += new System.EventHandler(this.loadMovieCfgBtn_Click);
-            // 
-            // newMovieCfgBtn
-            // 
-            this.newMovieCfgBtn.Location = new System.Drawing.Point(262, 22);
-            this.newMovieCfgBtn.Name = "newMovieCfgBtn";
-            this.newMovieCfgBtn.Size = new System.Drawing.Size(46, 23);
-            this.newMovieCfgBtn.TabIndex = 22;
-            this.newMovieCfgBtn.Text = "New";
-            this.newMovieCfgBtn.UseVisualStyleBackColor = true;
-            this.newMovieCfgBtn.Click += new System.EventHandler(this.newMovieCfgBtn_Click);
-            // 
-            // movieConfigBox
-            // 
-            this.movieConfigBox.Location = new System.Drawing.Point(9, 25);
-            this.movieConfigBox.Name = "movieConfigBox";
-            this.movieConfigBox.ReadOnly = true;
-            this.movieConfigBox.Size = new System.Drawing.Size(246, 20);
-            this.movieConfigBox.TabIndex = 20;
-            // 
             // configuration_label
             // 
             this.configuration_label.AutoSize = true;
+            this.configuration_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.configuration_label.Location = new System.Drawing.Point(7, 8);
             this.configuration_label.Name = "configuration_label";
-            this.configuration_label.Size = new System.Drawing.Size(91, 13);
+            this.configuration_label.Size = new System.Drawing.Size(68, 13);
             this.configuration_label.TabIndex = 21;
-            this.configuration_label.Text = "Configuration File:";
+            this.configuration_label.Text = "Movie Profile";
             // 
             // testChromaKeyBtn
             // 
@@ -575,7 +595,7 @@
             this.testChromaKeyBtn.Controls.Add(this.chromaHexBox);
             this.testChromaKeyBtn.Controls.Add(this.colorPickerBtn);
             this.testChromaKeyBtn.Controls.Add(this.chromaKeySample);
-            this.testChromaKeyBtn.Location = new System.Drawing.Point(9, 60);
+            this.testChromaKeyBtn.Location = new System.Drawing.Point(9, 97);
             this.testChromaKeyBtn.Name = "testChromaKeyBtn";
             this.testChromaKeyBtn.Size = new System.Drawing.Size(172, 90);
             this.testChromaKeyBtn.TabIndex = 9;
@@ -660,6 +680,7 @@
             // follower_movie_label
             // 
             this.follower_movie_label.AutoSize = true;
+            this.follower_movie_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.follower_movie_label.Location = new System.Drawing.Point(7, 8);
             this.follower_movie_label.Name = "follower_movie_label";
             this.follower_movie_label.Size = new System.Drawing.Size(78, 13);
@@ -668,7 +689,7 @@
             // 
             // followerTxtBox
             // 
-            this.followerTxtBox.Location = new System.Drawing.Point(9, 25);
+            this.followerTxtBox.Location = new System.Drawing.Point(9, 24);
             this.followerTxtBox.Name = "followerTxtBox";
             this.followerTxtBox.ReadOnly = true;
             this.followerTxtBox.Size = new System.Drawing.Size(265, 20);
@@ -711,6 +732,7 @@
             // subscriber_movie_label
             // 
             this.subscriber_movie_label.AutoSize = true;
+            this.subscriber_movie_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.subscriber_movie_label.Location = new System.Drawing.Point(7, 124);
             this.subscriber_movie_label.Name = "subscriber_movie_label";
             this.subscriber_movie_label.Size = new System.Drawing.Size(89, 13);
@@ -719,7 +741,7 @@
             // 
             // testFollowerBtn
             // 
-            this.testFollowerBtn.Location = new System.Drawing.Point(318, 22);
+            this.testFollowerBtn.Location = new System.Drawing.Point(318, 21);
             this.testFollowerBtn.Name = "testFollowerBtn";
             this.testFollowerBtn.Size = new System.Drawing.Size(39, 23);
             this.testFollowerBtn.TabIndex = 28;
@@ -729,7 +751,7 @@
             // 
             // followerBtn
             // 
-            this.followerBtn.Location = new System.Drawing.Point(280, 22);
+            this.followerBtn.Location = new System.Drawing.Point(280, 21);
             this.followerBtn.Name = "followerBtn";
             this.followerBtn.Size = new System.Drawing.Size(32, 23);
             this.followerBtn.TabIndex = 18;
@@ -760,6 +782,7 @@
             // host_movie_label
             // 
             this.host_movie_label.AutoSize = true;
+            this.host_movie_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.host_movie_label.Location = new System.Drawing.Point(7, 46);
             this.host_movie_label.Name = "host_movie_label";
             this.host_movie_label.Size = new System.Drawing.Size(61, 13);
@@ -779,6 +802,7 @@
             // donation_movie_label
             // 
             this.donation_movie_label.AutoSize = true;
+            this.donation_movie_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.donation_movie_label.Location = new System.Drawing.Point(7, 85);
             this.donation_movie_label.Name = "donation_movie_label";
             this.donation_movie_label.Size = new System.Drawing.Size(82, 13);
@@ -848,7 +872,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button saveMovieCfgBtn;
+        private System.Windows.Forms.Button saveMovieProfilesBtn;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
@@ -878,9 +902,6 @@
         private System.Windows.Forms.Label donation_movie_label;
         private System.Windows.Forms.Button testSubscriberBtn;
         private System.Windows.Forms.Button hostBtn;
-        private System.Windows.Forms.Button loadMovieCfgBtn;
-        private System.Windows.Forms.Button newMovieCfgBtn;
-        private System.Windows.Forms.TextBox movieConfigBox;
         private System.Windows.Forms.Label configuration_label;
         private System.Windows.Forms.Button saveAllBtn;
         private System.Windows.Forms.GroupBox activeAlertBox;
@@ -907,12 +928,16 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button chromaTestBtn;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button alertResizeBtn;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown alertHeightNum;
         private System.Windows.Forms.NumericUpDown alertWidthNum;
+        private System.Windows.Forms.ComboBox movieProfileCmb;
+        private System.Windows.Forms.Button newMovieProfileBtn;
+        private System.Windows.Forms.Button updateMovieProfileBtn;
+        private System.Windows.Forms.Button deleteMovieProfileBtn;
+        private System.Windows.Forms.Button renameMovieProfileBtn;
 
     }
 }

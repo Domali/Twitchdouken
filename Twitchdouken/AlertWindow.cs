@@ -19,12 +19,12 @@ namespace Twitchdouken
             e.Cancel = true;
         }
 
-        public void windowResize(int width, int height)
+        public void setSize(int width, int height)
         {
-            this.Width = width;
-            this.Height = height;
-            flashAlert.Width = (width - 16);
-            flashAlert.Height = (height - 39);
+            this.Width = width + 16;
+            this.Height = height + 39;
+            flashAlert.Width = width;
+            flashAlert.Height = height;
         }
     }
 }
