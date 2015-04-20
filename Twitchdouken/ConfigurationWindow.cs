@@ -43,79 +43,9 @@ namespace Twitchdouken
             updateAlertChromaKey();
         }
 
-        private void resetMovieProfileDataSource(string name)
+        private void ConfigurationWindow_Load(object sender, EventArgs e)
         {
-            bs = new BindingSource();
-            bs.DataSource = movieProfiles;
-
-            int index = -1;
-
-            if (name != null) {
-
-                foreach (KeyValuePair<string, MovieProfile> entry in movieProfiles)
-                {
-                    index++;
-                    if (entry.Value.name == name)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            movieProfileCmb.DataSource = bs;
-            movieProfileCmb.DisplayMember = "Key";
-
-            if (index != -1)
-                movieProfileCmb.SelectedIndex = index;
-        }
-
-        private Object getCurrentMovieProfile()
-        {
-            Object profileObject;
-
-            try
-            {
-                profileObject = ((KeyValuePair<string, MovieProfile>)movieProfileCmb.SelectedItem).Value;
-            }
-            catch (Exception)
-            {
-                profileObject = null;
-            }
-
-            return profileObject;
-        }
-
-        private void setMovie(TextBox textbox)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.InitialDirectory = "c:\\";
-            openFileDialog.Filter = "SWF Movie|*.swf";
-
-            DialogResult result = openFileDialog.ShowDialog();
-
-            if (result == DialogResult.OK)
-                textbox.Text = openFileDialog.FileName;
-        }
-
-        private void followerBtn_Click(object sender, EventArgs e)
-        {
-            setMovie(followerTxtBox);
-        }
-
-        private void hostBtn_Click(object sender, EventArgs e)
-        {
-            setMovie(hostTxtBox);
-        }
-
-        private void donationBtn_Click(object sender, EventArgs e)
-        {
-            setMovie(donationTxtBox);
-        }
-
-        private void subscriberBtn_Click(object sender, EventArgs e)
-        {
-            setMovie(subscriberTxtBox);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
 
         private void ConfigurationWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -126,69 +56,39 @@ namespace Twitchdouken
             e.Cancel = true;
         }
 
-        private void testFollowerBtn_Click(object sender, EventArgs e)
+        // ALL CODE FOR CONTROLS BELOW THIS LINE
+        private void saveAllBtn_Click(object sender, EventArgs e)
         {
-            parent.playFollower("Domalix,Nvmlulz,bdc_iceman");
+            saveTotalConfig();
         }
 
-        private void testHostBtn_Click(object sender, EventArgs e)
+        private void followerBox_CheckedChanged(object sender, EventArgs e)
         {
-            parent.playHost("Domalix", "9000");
+            if (initialized)
+                parent.updateGUIElements();
         }
 
-        private void testDonationBtn_Click(object sender, EventArgs e)
+        private void hostBox_CheckedChanged(object sender, EventArgs e)
         {
-            parent.playDonation("Domalix", "$5");
+            if (initialized)
+                parent.updateGUIElements();
         }
 
-        private void testSubscriberBtn_Click(object sender, EventArgs e)
+        private void subscriberBox_CheckedChanged(object sender, EventArgs e)
         {
-            parent.playSubscriber("Zuludian", "45 Months");
+            if (initialized)
+                parent.updateGUIElements();
         }
 
-        private void saveMovieProfiles()
+        private void donationBox_CheckedChanged(object sender, EventArgs e)
         {
-            List<MovieProfile> profiles = new List<MovieProfile>();
-
-            foreach (KeyValuePair<string, MovieProfile> entry in movieProfiles)
-            {
-                profiles.Add(entry.Value);
-            }
-
-            using (FileStream fs = File.Open(movieProfileFilePath, FileMode.Create))
-            using (StreamWriter sw = new StreamWriter(fs))
-            using (JsonWriter jw = new JsonTextWriter(sw))
-            {
-                jw.Formatting = Formatting.Indented;
-
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(jw, profiles.ToArray());
-            }
-
-            MessageBox.Show(null, "All movie profiles have been successfully saved.", "Movie Profiles", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (initialized)
+                parent.updateGUIElements();
         }
 
-        private void loadMovieProfiles()
+        private void movieProfileCmb_SelectedIndexChanged(object sender, EventArgs e)
         {
-            try
-            {
-                using (StreamReader sr = new StreamReader(movieProfileFilePath))
-                {
-                    string json = sr.ReadToEnd();
-                    List<MovieProfile> profiles = JsonConvert.DeserializeObject<List<MovieProfile>>(json);
-
-                    foreach (MovieProfile profile in profiles)
-                    {
-                        movieProfiles.Add(profile.name, profile);
-                    }
-                }
-            }
-            catch (FileNotFoundException)
-            {
-                saveMovieProfiles();
-            }
-
-            resetMovieProfileDataSource(null);
+            loadMovieProfileSettings();
         }
 
         private void newMovieProfileBtn_Click(object sender, EventArgs e)
@@ -276,6 +176,146 @@ namespace Twitchdouken
             }
         }
 
+        private void colorPickerBtn_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+
+            DialogResult result = colorDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                chromaHexBox.Text = colorToHex(colorDialog.Color);
+                chromaKeySample.BackColor = colorDialog.Color;
+            }
+        }
+
+        private void chromaTestBtn_Click(object sender, EventArgs e)
+        {
+            if (checkHex(chromaHexBox.Text))
+            {
+                chromaKeySample.BackColor = hexToColor(chromaHexBox.Text);
+                updateAlertChromaKey();
+            }
+            else
+            {
+                MessageBox.Show(null, "The hex value you attempted to enter is null or malformed. Please enter a valid hex value or use the color picker.",
+                    "Invalid Hex Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void alertWidthNum_ValueChanged(object sender, EventArgs e)
+        {
+            if (alertWidthNum.Value >= alertWidthNum.Maximum)
+                alertWidthNum.Value = alertWidthNum.Maximum;
+
+            this.alertWindow.setSize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
+        }
+
+        private void alertHeightNum_ValueChanged(object sender, EventArgs e)
+        {
+            if (alertHeightNum.Value >= alertHeightNum.Maximum)
+                alertHeightNum.Value = alertHeightNum.Maximum;
+
+            this.alertWindow.setSize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
+        }
+
+        private void followerBtn_Click(object sender, EventArgs e)
+        {
+            setMovie(followerTxtBox);
+        }
+
+        private void hostBtn_Click(object sender, EventArgs e)
+        {
+            setMovie(hostTxtBox);
+        }
+
+        private void donationBtn_Click(object sender, EventArgs e)
+        {
+            setMovie(donationTxtBox);
+        }
+
+        private void subscriberBtn_Click(object sender, EventArgs e)
+        {
+            setMovie(subscriberTxtBox);
+        }
+
+        private void testFollowerBtn_Click(object sender, EventArgs e)
+        {
+            parent.playFollower("Domalix,Nvmlulz,bdc_iceman");
+        }
+
+        private void testHostBtn_Click(object sender, EventArgs e)
+        {
+            parent.playHost("Domalix", "9000");
+        }
+
+        private void testDonationBtn_Click(object sender, EventArgs e)
+        {
+            parent.playDonation("Domalix", "$5");
+        }
+
+        private void testSubscriberBtn_Click(object sender, EventArgs e)
+        {
+            parent.playSubscriber("Zuludian", "45 Months");
+        }
+        // ALL CODE FOR CONTROLS ABOVE THIS LINE
+
+        private void setMovie(TextBox textbox)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.InitialDirectory = "c:\\";
+            openFileDialog.Filter = "SWF Movie|*.swf";
+
+            DialogResult result = openFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+                textbox.Text = openFileDialog.FileName;
+        }
+
+        private string colorToHex(Color color)
+        {
+            return color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+        }
+
+        private Color hexToColor(string hex)
+        {
+            return ColorTranslator.FromHtml("#" + hex.ToUpper());
+        }
+
+        private bool checkHex(string hex)
+        {
+            bool result = true;
+
+            if (hex == "")
+                result = false;
+
+            if (hex.Length < 6)
+            {
+                result = false;
+            }
+            else 
+            {
+                foreach (char c in hex.ToUpper())
+                {
+                    if (c < '0' || c > 'F')
+                        result = false;
+                }
+            }
+
+            if (!result)
+                return false;
+
+            return true;
+        }
+
+        private void updateAlertChromaKey()
+        {
+            this.alertWindow.BackColor = chromaKeySample.BackColor;
+            this.alertWindow.flashAlert.BGColor = colorToHex(chromaKeySample.BackColor);
+        }
+
+        // ALL CODE DEALING WITH CONFIGURATION FILES BELOW THIS LINE
         private JObject generateTwitchConfig()
         {
             JObject config = JObject.FromObject(new
@@ -318,20 +358,6 @@ namespace Twitchdouken
             return config;
         }
 
-        private void saveTotalConfig()
-        {
-            JObject config = new JObject();
-
-            config.Merge(generateGeneralConfig());
-            config.Merge(generateTwitchConfig());
-            config.Merge(generateTwitchAlertConfig());
-
-            using (StreamWriter file = new StreamWriter(this.configFilePath))
-            {
-                file.WriteLine(config.ToString());
-                MessageBox.Show(null, "Configuration file has been saved successfully.", "Configuration File", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
         public void loadTotalConfig()
         {
             try
@@ -372,138 +398,52 @@ namespace Twitchdouken
             }
             catch (NullReferenceException)
             {
-                MessageBox.Show(null, "Please either fix or delete the current configuration file to continue loading the program." + 
-                                " The program will now terminate", 
+                MessageBox.Show(null, "Please either fix or delete the current configuration file to continue loading the program." +
+                                " The program will now terminate",
                                 "Configuration File", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0);
             }
         }
 
-        private void saveAllBtn_Click(object sender, EventArgs e)
+        private void saveTotalConfig()
         {
-            saveTotalConfig();
-        }
+            JObject config = new JObject();
 
-        private void followerBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (initialized)
-                parent.updateGUIElements();
-        }
+            config.Merge(generateGeneralConfig());
+            config.Merge(generateTwitchConfig());
+            config.Merge(generateTwitchAlertConfig());
 
-        private void hostBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (initialized)
-                parent.updateGUIElements();
-        }
-
-        private void subscriberBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (initialized)
-                parent.updateGUIElements();
-        }
-
-        private void donationBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (initialized)
-                parent.updateGUIElements();
-        }
-
-        private void ConfigurationWindow_Load(object sender, EventArgs e)
-        {
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-        }
-
-        private string colorToHex(Color color)
-        {
-            return color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
-        }
-
-        private Color hexToColor(string hex)
-        {
-            return ColorTranslator.FromHtml("#" + hex.ToUpper());
-        }
-
-        private bool checkHex(string hex)
-        {
-            bool result = true;
-
-            if (hex == "")
-                result = false;
-
-            if (hex.Length < 6)
+            using (StreamWriter file = new StreamWriter(this.configFilePath))
             {
-                result = false;
-            }
-            else 
-            {
-                foreach (char c in hex.ToUpper())
-                {
-                    if (c < '0' || c > 'F')
-                        result = false;
-                }
-            }
-
-            if (!result)
-            {
-                MessageBox.Show(null, "The hex value you attempted to enter is null or malformed. Please enter a valid hex value or use the color picker.",
-                    "Invalid Hex Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                return false;
-            }
-
-            return true;
-        }
-
-        private void updateAlertChromaKey()
-        {
-            this.alertWindow.BackColor = chromaKeySample.BackColor;
-            this.alertWindow.flashAlert.BGColor = colorToHex(chromaKeySample.BackColor);
-        }
-
-        private void colorPickerBtn_Click(object sender, EventArgs e)
-        {
-            ColorDialog colorDialog = new ColorDialog();
-
-            DialogResult result = colorDialog.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                chromaHexBox.Text = colorToHex(colorDialog.Color);
-                chromaKeySample.BackColor = colorDialog.Color;
+                file.WriteLine(config.ToString());
+                MessageBox.Show(null, "Configuration file has been saved successfully.", "Configuration File", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+        // ALL CODE DEALING WITH CONFIGURATION ABOVE THIS LINE
 
-        private void chromaTestBtn_Click(object sender, EventArgs e)
+        // ALL CODE DEALING WITH MOVIE PROFILES BELOW
+        struct MovieProfile
         {
-            if (checkHex(chromaHexBox.Text))
-            {
-                chromaKeySample.BackColor = hexToColor(chromaHexBox.Text);
-                updateAlertChromaKey();
-            }
+            public string name { get; set; }
+            public MovieSettings settings;
+            public MoviePath path;
         }
 
-        private void alertWidthNum_ValueChanged(object sender, EventArgs e)
+        struct MovieSettings
         {
-            if (alertWidthNum.Value >= alertWidthNum.Maximum)
-                alertWidthNum.Value = alertWidthNum.Maximum;
-
-            this.alertWindow.setSize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
+            public string chroma;
+            public int width;
+            public int height;
         }
 
-        private void alertHeightNum_ValueChanged(object sender, EventArgs e)
+        struct MoviePath
         {
-            if (alertHeightNum.Value >= alertHeightNum.Maximum)
-                alertHeightNum.Value = alertHeightNum.Maximum;
-
-            this.alertWindow.setSize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
+            public string follower;
+            public string subscriber;
+            public string host;
+            public string donation;
         }
 
-        private void movieProfileCmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            loadMovieProfileSettings();
-        }
-
-        // updates the displayed data on the alert profiles tab whenever a movie profile is selected
         private void loadMovieProfileSettings()
         {
             try
@@ -534,7 +474,6 @@ namespace Twitchdouken
             }
         }
 
-        // updates movie profile data before flushing and reassigning the data source.
         private void updateMovieProfileSettings(string name)
         {
             MovieProfile profile = movieProfiles[name];
@@ -553,28 +492,94 @@ namespace Twitchdouken
             resetMovieProfileDataSource(name);
         }
 
-        // MOVIE PROFILE STRUCTS
-
-        struct MovieProfile
+        private void resetMovieProfileDataSource(string name)
         {
-            public string name { get; set; }
-            public MovieSettings settings;
-            public MoviePath path;
+            bs = new BindingSource();
+            bs.DataSource = movieProfiles;
+
+            int index = -1;
+
+            if (name != null)
+            {
+
+                foreach (KeyValuePair<string, MovieProfile> entry in movieProfiles)
+                {
+                    index++;
+                    if (entry.Value.name == name)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            movieProfileCmb.DataSource = bs;
+            movieProfileCmb.DisplayMember = "Key";
+
+            if (index != -1)
+                movieProfileCmb.SelectedIndex = index;
         }
 
-        struct MovieSettings
+        private Object getCurrentMovieProfile()
         {
-            public string chroma;
-            public int width;
-            public int height;
+            Object profileObject;
+
+            try
+            {
+                profileObject = ((KeyValuePair<string, MovieProfile>)movieProfileCmb.SelectedItem).Value;
+            }
+            catch (Exception)
+            {
+                profileObject = null;
+            }
+
+            return profileObject;
         }
 
-        struct MoviePath
+        private void loadMovieProfiles()
         {
-            public string follower;
-            public string subscriber;
-            public string host;
-            public string donation;
+            try
+            {
+                using (StreamReader sr = new StreamReader(movieProfileFilePath))
+                {
+                    string json = sr.ReadToEnd();
+                    List<MovieProfile> profiles = JsonConvert.DeserializeObject<List<MovieProfile>>(json);
+
+                    foreach (MovieProfile profile in profiles)
+                    {
+                        movieProfiles.Add(profile.name, profile);
+                    }
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                saveMovieProfiles();
+            }
+
+            resetMovieProfileDataSource(null);
         }
+
+        private void saveMovieProfiles()
+        {
+            List<MovieProfile> profiles = new List<MovieProfile>();
+
+            foreach (KeyValuePair<string, MovieProfile> entry in movieProfiles)
+            {
+                profiles.Add(entry.Value);
+            }
+
+            using (FileStream fs = File.Open(movieProfileFilePath, FileMode.Create))
+            using (StreamWriter sw = new StreamWriter(fs))
+            using (JsonWriter jw = new JsonTextWriter(sw))
+            {
+                jw.Formatting = Formatting.Indented;
+
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(jw, profiles.ToArray());
+            }
+
+            MessageBox.Show(null, "All movie profiles have been successfully saved.", "Movie Profiles", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // ALL CODE DEALING WITH MOVIE PROFILES ABOVE THIS LINE
     }
 }
