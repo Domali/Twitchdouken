@@ -124,51 +124,51 @@ namespace Twitchdouken
                 // new subscription
                 if (twitchHelper.newSubscriberCheck() && configWindow.subscriberBox.Checked)
                 {
-                    Subscriber new_subscriber = twitchHelper.getSubscriber();
+                    Subscriber subscriber = twitchHelper.getSubscriber();
 
-                    subscriberBox.Items.Insert(0, new_subscriber.name);
-                    playSubscriber(new_subscriber.name, "");
+                    subscriberBox.Items.Insert(0, subscriber.name);
+                    playSubscriber(subscriber.name, "");
                 }
                 // subsequent subscription
                 else if (ircHelper.newSubscriberCheck() && configWindow.subscriberBox.Checked)
                 {
-                    Subscriber new_subscriber = ircHelper.getSubscriber();
+                    Subscriber subscriber = ircHelper.getSubscriber();
 
-                    playSubscriber(new_subscriber.name, new_subscriber.months + " months");
-                    subscriberBox.Items.Insert(0, new_subscriber.name + " (" + new_subscriber.months + ")");
+                    playSubscriber(subscriber.name, subscriber.months + " months");
+                    subscriberBox.Items.Insert(0, subscriber.name + " (" + subscriber.months + ")");
                 }
                 // donation
                 else if (taHelper.newDonationCheck() && configWindow.donationBox.Checked)
                 {
-                    Donation new_donation = this.taHelper.getDonation();
+                    Donation donation = this.taHelper.getDonation();
 
-                    playDonation(new_donation.name, "$" + new_donation.amount);
-                    donationBox.Items.Insert(0, new_donation);
+                    playDonation(donation.name, "$" + donation.amount);
+                    donationBox.Items.Insert(0, donation);
                     donationBox.SetSelected(0, true);
                 }
                 // host
                 else if (ircHelper.newHostCheck() && configWindow.hostBox.Checked)
                 {
-                    Host new_host = this.ircHelper.getHost();
+                    Host host = this.ircHelper.getHost();
 
-                    if (Int32.Parse(new_host.viewers) >= (int) minViewerHost.Value)
-                        playHost(new_host.name, new_host.viewers);
+                    if (Int32.Parse(host.viewers) >= (int)minViewerHost.Value)
+                        playHost(host.name, host.viewers);
 
-                    hostBox.Items.Insert(0, new_host.name + " " + new_host.viewers);
+                    hostBox.Items.Insert(0, host.name + " " + host.viewers);
                 }
                 // follow
                 else if (twitchHelper.newFollowerCheck() && configWindow.followerBox.Checked)
                 {
-                    List<Follower> new_followers = this.twitchHelper.getFollowerQueue();
-                    List<string> follower_list = new List<string>();
+                    List<Follower> newFollowers = this.twitchHelper.getFollowerQueue();
+                    List<string> followerList = new List<string>();
 
-                    foreach (Follower follower in new_followers)
+                    foreach (Follower follower in newFollowers)
                     {
-                        follower_list.Add(follower.name);
+                        followerList.Add(follower.name);
                         followBox.Items.Insert(0, follower.name);
                     }
 
-                    string followers = string.Join(",", follower_list.ToArray());
+                    string followers = string.Join(",", followerList.ToArray());
                     playFollower(followers);
                 }
             }
