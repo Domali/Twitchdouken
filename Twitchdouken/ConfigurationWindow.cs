@@ -36,11 +36,8 @@ namespace Twitchdouken
 
             movieProfiles = new SortedDictionary<string, MovieProfile>();
 
-<<<<<<< HEAD
             initialized = false;
 
-=======
->>>>>>> 3feefecf8a46ad9191af87bed080a4ba9050403c
             loadTotalConfig();
             loadMovieProfiles();
             updateAlertChromaKey();
@@ -164,13 +161,8 @@ namespace Twitchdouken
             {
                 jw.Formatting = Formatting.Indented;
 
-<<<<<<< HEAD
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(jw, profiles.ToArray());
-=======
-                chromaKeySample.BackColor = Color.White;
-                updateAlertChromaKey();
->>>>>>> 3feefecf8a46ad9191af87bed080a4ba9050403c
             }
 
             MessageBox.Show(null, "All movie profiles have been successfully saved.", "Movie Profiles", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -218,7 +210,6 @@ namespace Twitchdouken
 
                 try
                 {
-<<<<<<< HEAD
                     movieProfiles.Add(profile.name, profile);
                 }
                 catch (ArgumentException)
@@ -226,45 +217,13 @@ namespace Twitchdouken
                     // means we have a duplicate named profile, add a random number at the end
                     Random r = new Random();
                     int n = r.Next();
-=======
-                    String json = file.ReadToEnd();
-                    JToken token = JObject.Parse(json);
-
-                    followerTxtBox.Text = (string)token["movie_paths"]["follower_movie"];
-                    subscriberTxtBox.Text = (string)token["movie_paths"]["subscriber_movie"];
-                    hostTxtBox.Text = (string)token["movie_paths"]["host_movie"];
-                    donationTxtBox.Text = (string)token["movie_paths"]["donation_movie"];
-
-                    chromaHexBox.Text = (string)token["movie_config"]["chroma_key"];
-                    chromaKeySample.BackColor = hexToColor(chromaHexBox.Text);                    
-                    int width = (int)token["movie_config"]["width"];
-                    int height = (int)token["movie_config"]["height"];
->>>>>>> 3feefecf8a46ad9191af87bed080a4ba9050403c
 
                     profile.name = profile.name + "_" + n.ToString();
 
                     movieProfiles.Add(profile.name, profile);
                 }
 
-<<<<<<< HEAD
                 resetMovieProfileDataSource(profile.name);
-=======
-                movieConfigBox.Text = filename;
-            }
-            catch (System.IO.DirectoryNotFoundException)
-            {
-                MessageBox.Show(null, "Movie configuration file not found - please select another file and try again.", "Movie Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                movieConfigBox.Text = "";
-            }
-            catch (System.IO.FileNotFoundException)
-            {
-                MessageBox.Show(null, "Movie configuration file not found - please select another file and try again.", "Movie Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                movieConfigBox.Text = "";
-            }
-            catch (System.NullReferenceException)
-            {
-                MessageBox.Show(null, "The movie configuration file is malformed. Please correct this issue and try again", "Movie Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
->>>>>>> 3feefecf8a46ad9191af87bed080a4ba9050403c
             }
         }
 
@@ -275,22 +234,7 @@ namespace Twitchdouken
 
         private void saveMovieProfilesBtn_Click(object sender, EventArgs e)
         {
-<<<<<<< HEAD
             saveMovieProfiles();
-=======
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.InitialDirectory = "c:\\";
-            openFileDialog.Filter = "Configuration File|*.cfg";
-            openFileDialog.Title = "Configuration File Name";
-            
-            DialogResult result = openFileDialog.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                loadMovieConfigurationFile(openFileDialog.FileName);
-            }
->>>>>>> 3feefecf8a46ad9191af87bed080a4ba9050403c
         }
 
         private void renameMovieProfileBtn_Click(object sender, EventArgs e)
@@ -324,23 +268,12 @@ namespace Twitchdouken
 
             if (profileObject != null)
             {
-<<<<<<< HEAD
                 MovieProfile profile = (MovieProfile)getCurrentMovieProfile();
 
                 movieProfiles.Remove(profile.name);
 
                 resetMovieProfileDataSource(null);
             }
-=======
-                movie_config = new
-                {
-                    chroma_key = colorToHex(chromaKeySample.BackColor),
-                    width = (int)alertWidthNum.Value,
-                    height = (int)alertHeightNum.Value
-                }
-            });
-            return config;
->>>>>>> 3feefecf8a46ad9191af87bed080a4ba9050403c
         }
 
         private JObject generateTwitchConfig()
@@ -557,7 +490,6 @@ namespace Twitchdouken
             this.alertWindow.setSize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
         }
 
-<<<<<<< HEAD
         private void alertHeightNum_ValueChanged(object sender, EventArgs e)
         {
             if (alertHeightNum.Value >= alertHeightNum.Maximum)
@@ -604,9 +536,6 @@ namespace Twitchdouken
 
         // updates movie profile data before flushing and reassigning the data source.
         private void updateMovieProfileSettings(string name)
-=======
-        private void alertWidthNum_ValueChanged(object sender, EventArgs e)
->>>>>>> 3feefecf8a46ad9191af87bed080a4ba9050403c
         {
             MovieProfile profile = movieProfiles[name];
 
@@ -635,17 +564,17 @@ namespace Twitchdouken
 
         struct MovieSettings
         {
-            public string chroma { get; set; }
-            public int width { get; set; }
-            public int height { get; set; }
+            public string chroma;
+            public int width;
+            public int height;
         }
 
         struct MoviePath
         {
-            public string follower { get; set; }
-            public string subscriber { get; set; }
-            public string host { get; set; }
-            public string donation { get; set; }
+            public string follower;
+            public string subscriber;
+            public string host;
+            public string donation;
         }
     }
 }
