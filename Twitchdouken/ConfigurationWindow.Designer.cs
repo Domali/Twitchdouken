@@ -46,6 +46,7 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabControl3 = new System.Windows.Forms.TabControl();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.linkIrcGetOAuth = new System.Windows.Forms.LinkLabel();
             this.ircOAuthBox = new System.Windows.Forms.TextBox();
             this.channelBox = new System.Windows.Forms.TextBox();
             this.ircOAuthLabel = new System.Windows.Forms.Label();
@@ -292,6 +293,7 @@
             // 
             // tabPage7
             // 
+            this.tabPage7.Controls.Add(this.linkIrcGetOAuth);
             this.tabPage7.Controls.Add(this.ircOAuthBox);
             this.tabPage7.Controls.Add(this.channelBox);
             this.tabPage7.Controls.Add(this.ircOAuthLabel);
@@ -304,18 +306,30 @@
             this.tabPage7.Text = "IRC";
             this.tabPage7.UseVisualStyleBackColor = true;
             // 
+            // linkIrcGetOAuth
+            // 
+            this.linkIrcGetOAuth.AutoSize = true;
+            this.linkIrcGetOAuth.Location = new System.Drawing.Point(280, 70);
+            this.linkIrcGetOAuth.Name = "linkIrcGetOAuth";
+            this.linkIrcGetOAuth.Size = new System.Drawing.Size(82, 13);
+            this.linkIrcGetOAuth.TabIndex = 15;
+            this.linkIrcGetOAuth.TabStop = true;
+            this.linkIrcGetOAuth.Text = "Get New OAuth";
+            this.linkIrcGetOAuth.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkIrcGetOAuth_LinkClicked);
+            // 
             // ircOAuthBox
             // 
             this.ircOAuthBox.Location = new System.Drawing.Point(9, 65);
             this.ircOAuthBox.Name = "ircOAuthBox";
-            this.ircOAuthBox.Size = new System.Drawing.Size(297, 20);
+            this.ircOAuthBox.PasswordChar = '●';
+            this.ircOAuthBox.Size = new System.Drawing.Size(268, 20);
             this.ircOAuthBox.TabIndex = 14;
             // 
             // channelBox
             // 
             this.channelBox.Location = new System.Drawing.Point(9, 27);
             this.channelBox.Name = "channelBox";
-            this.channelBox.Size = new System.Drawing.Size(297, 20);
+            this.channelBox.Size = new System.Drawing.Size(268, 20);
             this.channelBox.TabIndex = 13;
             // 
             // ircOAuthLabel
@@ -354,7 +368,8 @@
             // 
             this.subscriberOAuthBox.Location = new System.Drawing.Point(9, 27);
             this.subscriberOAuthBox.Name = "subscriberOAuthBox";
-            this.subscriberOAuthBox.Size = new System.Drawing.Size(297, 20);
+            this.subscriberOAuthBox.PasswordChar = '●';
+            this.subscriberOAuthBox.Size = new System.Drawing.Size(268, 20);
             this.subscriberOAuthBox.TabIndex = 13;
             // 
             // subscriberOAuthLabel
@@ -382,7 +397,8 @@
             // 
             this.TAAccessTokenBox.Location = new System.Drawing.Point(9, 23);
             this.TAAccessTokenBox.Name = "TAAccessTokenBox";
-            this.TAAccessTokenBox.Size = new System.Drawing.Size(297, 20);
+            this.TAAccessTokenBox.PasswordChar = '●';
+            this.TAAccessTokenBox.Size = new System.Drawing.Size(268, 20);
             this.TAAccessTokenBox.TabIndex = 3;
             // 
             // TAAccessTokenLabel
@@ -938,6 +954,7 @@
         private System.Windows.Forms.Button updateMovieProfileBtn;
         private System.Windows.Forms.Button deleteMovieProfileBtn;
         private System.Windows.Forms.Button renameMovieProfileBtn;
+        private System.Windows.Forms.LinkLabel linkIrcGetOAuth;
 
     }
 }
