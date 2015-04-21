@@ -62,10 +62,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="IrcDotNet">
-      <HintPath>..\..\..\..\GitHub\IrcDotNet\src\samples\TwitchIrcClient\bin\Debug\IrcDotNet.dll</HintPath>
+      <HintPath>..\..\IrcDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\..\..\..\Programming Libraries\JSON.NET\Bin\Net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -91,6 +93,7 @@
     <Compile Include="ConfigurationWindow.Designer.cs">
       <DependentUpon>ConfigurationWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Encryption.cs" />
     <Compile Include="Twitchdouken.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,6 +123,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
