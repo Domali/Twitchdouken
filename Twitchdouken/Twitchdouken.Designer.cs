@@ -201,6 +201,7 @@
             this.donationBox.Name = "donationBox";
             this.donationBox.Size = new System.Drawing.Size(163, 264);
             this.donationBox.TabIndex = 17;
+            this.donationBox.SelectedIndexChanged += new System.EventHandler(this.donationBox_SelectedIndexChanged);
             // 
             // menuStrip
             // 
