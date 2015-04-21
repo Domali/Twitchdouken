@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -74,8 +75,11 @@ namespace Twitchdouken
 
         internal void playFlash(string fileName, List<string> functionCalls)
         {
-            if (fileName != "")
+            if (fileName != string.Empty)
             {
+                if (!File.Exists(fileName))
+                    return;
+
                 alertWindow.flashAlert.LoadMovie(0, fileName);
                 alertWindow.flashAlert.Loop = false;
                 alertWindow.flashAlert.Quality = 0;
@@ -127,7 +131,7 @@ namespace Twitchdouken
                     Subscriber subscriber = twitchHelper.getSubscriber();
 
                     subscriberBox.Items.Insert(0, subscriber.name);
-                    playSubscriber(subscriber.name, "");
+                    playSubscriber(subscriber.name, string.Empty);
                 }
                 // subsequent subscription
                 else if (ircHelper.newSubscriberCheck() && configWindow.subscriberBox.Checked)
@@ -140,7 +144,7 @@ namespace Twitchdouken
                 // donation
                 else if (taHelper.newDonationCheck() && configWindow.donationBox.Checked)
                 {
-                    Donation donation = this.taHelper.getDonation();
+                    Donation donation = taHelper.getDonation();
 
                     playDonation(donation.name, "$" + donation.amount);
                     donationBox.Items.Insert(0, donation);
@@ -149,7 +153,7 @@ namespace Twitchdouken
                 // host
                 else if (ircHelper.newHostCheck() && configWindow.hostBox.Checked)
                 {
-                    Host host = this.ircHelper.getHost();
+                    Host host = ircHelper.getHost();
 
                     if (Int32.Parse(host.viewers) >= (int)minViewerHost.Value)
                         playHost(host.name, host.viewers);
@@ -159,7 +163,7 @@ namespace Twitchdouken
                 // follow
                 else if (twitchHelper.newFollowerCheck() && configWindow.followerBox.Checked)
                 {
-                    List<Follower> newFollowers = this.twitchHelper.getFollowerQueue();
+                    List<Follower> newFollowers = twitchHelper.getFollowerQueue();
                     List<string> followerList = new List<string>();
 
                     foreach (Follower follower in newFollowers)

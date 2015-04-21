@@ -77,7 +77,7 @@ namespace Twitchdouken
                         break;
                 }
 
-                if (!this.running)
+                if (!running)
                     break;
             }
         }

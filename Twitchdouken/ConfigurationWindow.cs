@@ -52,6 +52,8 @@ namespace Twitchdouken
 
             ircOAuthLink.LinkData = "http://twitchapps.com/tmi/";
             linkIrcGetOAuth.Links.Add(ircOAuthLink);
+
+            updateLabel.Visible = false;
         }
 
         private void ConfigurationWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -99,6 +101,8 @@ namespace Twitchdouken
 
         private void movieProfileCmb_SelectedIndexChanged(object sender, EventArgs e)
         {
+            updateLabel.Visible = false;
+
             loadMovieProfileSettings();
         }
 
@@ -106,7 +110,7 @@ namespace Twitchdouken
         {
             string name = Interaction.InputBox("Please enter a name for your new profile.", "New Profile", "Default");
 
-            if (name != "")
+            if (name != string.Empty)
             {
                 MovieProfile profile = new MovieProfile();
 
@@ -141,35 +145,46 @@ namespace Twitchdouken
         private void updateMovieProfileBtn_Click(object sender, EventArgs e)
         {
             updateMovieProfileSettings(movieProfileCmb.Text);
+            updateLabel.Visible = false;
         }
 
         private void saveMovieProfilesBtn_Click(object sender, EventArgs e)
         {
-            saveMovieProfiles();
+            if (!updateLabel.Visible)
+                saveMovieProfiles();
+            else
+                MessageBox.Show(null, "Please update the current profile before trying to save.", "Update Profile", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         private void renameMovieProfileBtn_Click(object sender, EventArgs e)
         {
-            string name = Interaction.InputBox("Please enter a new name for the selected profile.", "Rename Profile", "");
-
-            if (name != "")
+            if (!updateLabel.Visible)
             {
-                foreach (KeyValuePair<string, MovieProfile> entry in movieProfiles)
+                string name = Interaction.InputBox("Please enter a new name for the selected profile.", "Rename Profile", string.Empty);
+
+                if (name != string.Empty)
                 {
-                    if (entry.Value.name == name)
+                    foreach (KeyValuePair<string, MovieProfile> entry in movieProfiles)
                     {
-                        MessageBox.Show(null, "This profile name already exists, please try a different name.", "Duplicate Profile", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        if (entry.Value.name == name)
+                        {
+                            MessageBox.Show(null, "This profile name already exists, please try a different name.", "Duplicate Profile", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                     }
+
+                    MovieProfile profile = (MovieProfile)getCurrentMovieProfile();
+
+                    movieProfiles.Remove(profile.name);
+                    profile.name = name;
+                    movieProfiles.Add(profile.name, profile);
+
+                    resetMovieProfileDataSource(profile.name);
                 }
-
-                MovieProfile profile = (MovieProfile)getCurrentMovieProfile();
-
-                movieProfiles.Remove(profile.name);
-                profile.name = name;
-                movieProfiles.Add(profile.name, profile);
-
-                resetMovieProfileDataSource(profile.name);
+            }
+            else
+            {
+                MessageBox.Show(null, "Please update the current profile before trying to rename.", "Update Profile", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
@@ -194,18 +209,17 @@ namespace Twitchdouken
             DialogResult result = colorDialog.ShowDialog();
 
             if (result == DialogResult.OK)
-            {
                 chromaHexBox.Text = colorToHex(colorDialog.Color);
-                chromaKeySample.BackColor = colorDialog.Color;
-            }
         }
 
-        private void chromaTestBtn_Click(object sender, EventArgs e)
+        private void chromaUpdateBtn_Click(object sender, EventArgs e)
         {
             if (checkHex(chromaHexBox.Text))
             {
                 chromaKeySample.BackColor = hexToColor(chromaHexBox.Text);
                 updateAlertChromaKey();
+
+                updateLabel.Visible = true;
             }
             else
             {
@@ -219,6 +233,8 @@ namespace Twitchdouken
             if (alertWidthNum.Value >= alertWidthNum.Maximum)
                 alertWidthNum.Value = alertWidthNum.Maximum;
 
+            updateLabel.Visible = true;
+
             this.alertWindow.setSize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
         }
 
@@ -226,6 +242,8 @@ namespace Twitchdouken
         {
             if (alertHeightNum.Value >= alertHeightNum.Maximum)
                 alertHeightNum.Value = alertHeightNum.Maximum;
+
+            updateLabel.Visible = true;
 
             this.alertWindow.setSize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
         }
@@ -281,7 +299,10 @@ namespace Twitchdouken
             DialogResult result = openFileDialog.ShowDialog();
 
             if (result == DialogResult.OK)
+            {
                 textbox.Text = openFileDialog.FileName;
+                updateLabel.Visible = true;
+            }
         }
 
         private string colorToHex(Color color)
@@ -298,7 +319,7 @@ namespace Twitchdouken
         {
             bool result = true;
 
-            if (hex == "")
+            if (hex == string.Empty)
                 result = false;
 
             if (hex.Length < 6)
@@ -466,6 +487,41 @@ namespace Twitchdouken
             public string donation;
         }
 
+        private bool validMoviePaths(MovieProfile profile)
+        {
+            bool validPaths = true;
+
+            if (!File.Exists(profile.path.follower) && profile.path.follower != string.Empty)
+            {
+                profile.path.follower = string.Empty;
+                followerTxtBox.Text = profile.path.follower;
+                validPaths = false;
+            }
+
+            if (!File.Exists(profile.path.host) && profile.path.host != string.Empty)
+            {
+                profile.path.host = string.Empty;
+                hostTxtBox.Text = profile.path.host;
+                validPaths = false;
+            }
+
+            if (!File.Exists(profile.path.donation) && profile.path.donation != string.Empty)
+            {
+                profile.path.donation = string.Empty;
+                donationTxtBox.Text = profile.path.donation;
+                validPaths = false;
+            }
+
+            if (!File.Exists(profile.path.subscriber) && profile.path.subscriber != string.Empty)
+            {
+                profile.path.subscriber = string.Empty;
+                subscriberTxtBox.Text = profile.path.subscriber;
+                validPaths = false;
+            }
+
+            return validPaths;
+        }
+
         private void loadMovieProfileSettings()
         {
             try
@@ -484,14 +540,20 @@ namespace Twitchdouken
                     alertWidthNum.Value = profile.settings.width;
                     alertHeightNum.Value = profile.settings.height;
 
+                    alertWindow.setSize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
+
                     followerTxtBox.Text = profile.path.follower;
                     hostTxtBox.Text = profile.path.host;
                     donationTxtBox.Text = profile.path.donation;
                     subscriberTxtBox.Text = profile.path.subscriber;
+
+                    if (!validMoviePaths(profile))
+                        updateMovieProfileSettings(profile.name);
                 }
             }
             catch (InvalidCastException)
             {
+                alertWindow.setSize((int)alertWidthNum.Value, (int)alertHeightNum.Value);
                 return;
             }
         }
@@ -500,7 +562,7 @@ namespace Twitchdouken
         {
             MovieProfile profile = movieProfiles[name];
 
-            profile.settings.chroma = chromaHexBox.Text;
+            profile.settings.chroma = colorToHex(chromaKeySample.BackColor);
             profile.settings.width = (int)alertWidthNum.Value;
             profile.settings.height = (int)alertHeightNum.Value;
 
@@ -601,7 +663,6 @@ namespace Twitchdouken
 
             MessageBox.Show(null, "All movie profiles have been successfully saved.", "Movie Profiles", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
         // ALL CODE DEALING WITH MOVIE PROFILES ABOVE THIS LINE
     }
 }
