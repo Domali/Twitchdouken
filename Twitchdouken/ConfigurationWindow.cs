@@ -24,6 +24,7 @@ namespace Twitchdouken
         private string movieProfileFilePath;
 
         private bool initialized;
+        private bool multiMonthTest= false;
 
         public ConfigurationWindow(Twitchdouken parent, AlertWindow alertWindow)
         {
@@ -267,7 +268,12 @@ namespace Twitchdouken
 
         private void testSubscriberBtn_Click(object sender, EventArgs e)
         {
-            parent.playSubscriber("Zuludian", "45 Months");
+            if (multiMonthTest)
+                parent.playSubscriber("Zuludian", "45");
+            else
+                parent.playSubscriber("Zuludian", "0");
+            multiMonthTest = !multiMonthTest;
+              
         }
         // ALL CODE FOR CONTROLS ABOVE THIS LINE
 

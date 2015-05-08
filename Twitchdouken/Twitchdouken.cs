@@ -127,14 +127,14 @@ namespace Twitchdouken
                     Subscriber subscriber = twitchHelper.getSubscriber();
 
                     subscriberBox.Items.Insert(0, subscriber.name);
-                    playSubscriber(subscriber.name, "");
+                    playSubscriber(subscriber.name, "0");
                 }
                 // subsequent subscription
                 else if (ircHelper.newSubscriberCheck() && configWindow.subscriberBox.Checked)
                 {
                     Subscriber subscriber = ircHelper.getSubscriber();
 
-                    playSubscriber(subscriber.name, subscriber.months + " months");
+                    playSubscriber(subscriber.name, subscriber.months);
                     subscriberBox.Items.Insert(0, subscriber.name + " (" + subscriber.months + ")");
                 }
                 // donation
