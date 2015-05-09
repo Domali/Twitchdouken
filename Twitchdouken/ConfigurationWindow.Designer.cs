@@ -73,7 +73,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.configuration_label = new System.Windows.Forms.Label();
             this.testChromaKeyBtn = new System.Windows.Forms.GroupBox();
-            this.chromaTestBtn = new System.Windows.Forms.Button();
+            this.chromaUpdateBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.chromaHexBox = new System.Windows.Forms.TextBox();
             this.colorPickerBtn = new System.Windows.Forms.Button();
@@ -95,6 +95,7 @@
             this.donation_movie_label = new System.Windows.Forms.Label();
             this.testSubscriberBtn = new System.Windows.Forms.Button();
             this.hostBtn = new System.Windows.Forms.Button();
+            this.updateLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.activeAlertBox.SuspendLayout();
@@ -433,6 +434,7 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.updateLabel);
             this.tabPage5.Controls.Add(this.deleteMovieProfileBtn);
             this.tabPage5.Controls.Add(this.renameMovieProfileBtn);
             this.tabPage5.Controls.Add(this.updateMovieProfileBtn);
@@ -606,7 +608,7 @@
             // 
             // testChromaKeyBtn
             // 
-            this.testChromaKeyBtn.Controls.Add(this.chromaTestBtn);
+            this.testChromaKeyBtn.Controls.Add(this.chromaUpdateBtn);
             this.testChromaKeyBtn.Controls.Add(this.label1);
             this.testChromaKeyBtn.Controls.Add(this.chromaHexBox);
             this.testChromaKeyBtn.Controls.Add(this.colorPickerBtn);
@@ -618,15 +620,15 @@
             this.testChromaKeyBtn.TabStop = false;
             this.testChromaKeyBtn.Text = "Chroma Key";
             // 
-            // chromaTestBtn
+            // chromaUpdateBtn
             // 
-            this.chromaTestBtn.Location = new System.Drawing.Point(13, 58);
-            this.chromaTestBtn.Name = "chromaTestBtn";
-            this.chromaTestBtn.Size = new System.Drawing.Size(58, 23);
-            this.chromaTestBtn.TabIndex = 26;
-            this.chromaTestBtn.Text = "Test";
-            this.chromaTestBtn.UseVisualStyleBackColor = true;
-            this.chromaTestBtn.Click += new System.EventHandler(this.chromaTestBtn_Click);
+            this.chromaUpdateBtn.Location = new System.Drawing.Point(13, 58);
+            this.chromaUpdateBtn.Name = "chromaUpdateBtn";
+            this.chromaUpdateBtn.Size = new System.Drawing.Size(58, 23);
+            this.chromaUpdateBtn.TabIndex = 26;
+            this.chromaUpdateBtn.Text = "Update";
+            this.chromaUpdateBtn.UseVisualStyleBackColor = true;
+            this.chromaUpdateBtn.Click += new System.EventHandler(this.chromaUpdateBtn_Click);
             // 
             // label1
             // 
@@ -845,6 +847,17 @@
             this.hostBtn.UseVisualStyleBackColor = true;
             this.hostBtn.Click += new System.EventHandler(this.hostBtn_Click);
             // 
+            // updateLabel
+            // 
+            this.updateLabel.AutoSize = true;
+            this.updateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.updateLabel.Location = new System.Drawing.Point(190, 8);
+            this.updateLabel.Name = "updateLabel";
+            this.updateLabel.Size = new System.Drawing.Size(164, 13);
+            this.updateLabel.TabIndex = 31;
+            this.updateLabel.Text = "PLEASE UPDATE PROFILE";
+            this.updateLabel.Visible = false;
+            // 
             // ConfigurationWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -942,7 +955,7 @@
         private System.Windows.Forms.Label subscriberOAuthLabel;
         private System.Windows.Forms.TextBox chromaHexBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button chromaTestBtn;
+        private System.Windows.Forms.Button chromaUpdateBtn;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
@@ -955,6 +968,7 @@
         private System.Windows.Forms.Button deleteMovieProfileBtn;
         private System.Windows.Forms.Button renameMovieProfileBtn;
         private System.Windows.Forms.LinkLabel linkIrcGetOAuth;
+        private System.Windows.Forms.Label updateLabel;
 
     }
 }
