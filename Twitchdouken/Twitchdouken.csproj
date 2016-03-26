@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>D:\Google Drive\Twitchdouken Published\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -22,8 +22,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -62,12 +61,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="IrcDotNet">
-      <HintPath>..\..\IrcDotNet.dll</HintPath>
+      <HintPath>D:\Programming Libraries\IrcDotNet\IrcDotNet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>D:\Programming Libraries\Json.net\Bin\Net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -94,6 +93,13 @@
       <DependentUpon>ConfigurationWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Encryption.cs" />
+    <Compile Include="SubTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SubTestForm.Designer.cs">
+      <DependentUpon>SubTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StreamtipAPIHelper.cs" />
     <Compile Include="Twitchdouken.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,6 +116,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigurationWindow.resx">
       <DependentUpon>ConfigurationWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SubTestForm.resx">
+      <DependentUpon>SubTestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Twitchdouken.resx">
       <DependentUpon>Twitchdouken.cs</DependentUpon>

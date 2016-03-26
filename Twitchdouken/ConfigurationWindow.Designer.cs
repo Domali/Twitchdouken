@@ -55,11 +55,17 @@
             this.subscriberOAuthBox = new System.Windows.Forms.TextBox();
             this.subscriberOAuthLabel = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.TAAccessTokenBox = new System.Windows.Forms.TextBox();
+            this.ClientIDBox = new System.Windows.Forms.TextBox();
+            this.ClientIDLabel = new System.Windows.Forms.Label();
+            this.STRadioButton = new System.Windows.Forms.RadioButton();
+            this.TARadioButton = new System.Windows.Forms.RadioButton();
+            this.APILabel = new System.Windows.Forms.Label();
+            this.AccessTokenBox = new System.Windows.Forms.TextBox();
             this.TAAccessTokenLabel = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.updateLabel = new System.Windows.Forms.Label();
             this.deleteMovieProfileBtn = new System.Windows.Forms.Button();
             this.renameMovieProfileBtn = new System.Windows.Forms.Button();
             this.updateMovieProfileBtn = new System.Windows.Forms.Button();
@@ -95,7 +101,6 @@
             this.donation_movie_label = new System.Windows.Forms.Label();
             this.testSubscriberBtn = new System.Windows.Forms.Button();
             this.hostBtn = new System.Windows.Forms.Button();
-            this.updateLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.activeAlertBox.SuspendLayout();
@@ -172,7 +177,7 @@
             this.donationBox.AutoSize = true;
             this.donationBox.Location = new System.Drawing.Point(85, 78);
             this.donationBox.Name = "donationBox";
-            this.donationBox.Size = new System.Drawing.Size(14, 13);
+            this.donationBox.Size = new System.Drawing.Size(15, 14);
             this.donationBox.TabIndex = 7;
             this.donationBox.UseVisualStyleBackColor = true;
             this.donationBox.CheckedChanged += new System.EventHandler(this.donationBox_CheckedChanged);
@@ -191,7 +196,7 @@
             this.hostBox.AutoSize = true;
             this.hostBox.Location = new System.Drawing.Point(85, 58);
             this.hostBox.Name = "hostBox";
-            this.hostBox.Size = new System.Drawing.Size(14, 13);
+            this.hostBox.Size = new System.Drawing.Size(15, 14);
             this.hostBox.TabIndex = 5;
             this.hostBox.UseVisualStyleBackColor = true;
             this.hostBox.CheckedChanged += new System.EventHandler(this.hostBox_CheckedChanged);
@@ -210,7 +215,7 @@
             this.subscriberBox.AutoSize = true;
             this.subscriberBox.Location = new System.Drawing.Point(85, 38);
             this.subscriberBox.Name = "subscriberBox";
-            this.subscriberBox.Size = new System.Drawing.Size(14, 13);
+            this.subscriberBox.Size = new System.Drawing.Size(15, 14);
             this.subscriberBox.TabIndex = 3;
             this.subscriberBox.UseVisualStyleBackColor = true;
             this.subscriberBox.CheckedChanged += new System.EventHandler(this.subscriberBox_CheckedChanged);
@@ -220,7 +225,7 @@
             this.followerBox.AutoSize = true;
             this.followerBox.Location = new System.Drawing.Point(85, 18);
             this.followerBox.Name = "followerBox";
-            this.followerBox.Size = new System.Drawing.Size(14, 13);
+            this.followerBox.Size = new System.Drawing.Size(15, 14);
             this.followerBox.TabIndex = 2;
             this.followerBox.UseVisualStyleBackColor = true;
             this.followerBox.CheckedChanged += new System.EventHandler(this.followerBox_CheckedChanged);
@@ -257,7 +262,7 @@
             this.runAtStartBox.AutoSize = true;
             this.runAtStartBox.Location = new System.Drawing.Point(76, 223);
             this.runAtStartBox.Name = "runAtStartBox";
-            this.runAtStartBox.Size = new System.Drawing.Size(14, 13);
+            this.runAtStartBox.Size = new System.Drawing.Size(15, 14);
             this.runAtStartBox.TabIndex = 8;
             this.runAtStartBox.UseVisualStyleBackColor = true;
             // 
@@ -385,7 +390,12 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.TAAccessTokenBox);
+            this.tabPage3.Controls.Add(this.ClientIDBox);
+            this.tabPage3.Controls.Add(this.ClientIDLabel);
+            this.tabPage3.Controls.Add(this.STRadioButton);
+            this.tabPage3.Controls.Add(this.TARadioButton);
+            this.tabPage3.Controls.Add(this.APILabel);
+            this.tabPage3.Controls.Add(this.AccessTokenBox);
             this.tabPage3.Controls.Add(this.TAAccessTokenLabel);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
@@ -394,19 +404,71 @@
             this.tabPage3.Text = "Donations";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // TAAccessTokenBox
+            // ClientIDBox
             // 
-            this.TAAccessTokenBox.Location = new System.Drawing.Point(9, 23);
-            this.TAAccessTokenBox.Name = "TAAccessTokenBox";
-            this.TAAccessTokenBox.PasswordChar = '●';
-            this.TAAccessTokenBox.Size = new System.Drawing.Size(268, 20);
-            this.TAAccessTokenBox.TabIndex = 3;
+            this.ClientIDBox.Location = new System.Drawing.Point(12, 106);
+            this.ClientIDBox.Name = "ClientIDBox";
+            this.ClientIDBox.Size = new System.Drawing.Size(266, 20);
+            this.ClientIDBox.TabIndex = 9;
+            this.ClientIDBox.Visible = false;
+            // 
+            // ClientIDLabel
+            // 
+            this.ClientIDLabel.AutoSize = true;
+            this.ClientIDLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClientIDLabel.Location = new System.Drawing.Point(9, 90);
+            this.ClientIDLabel.Name = "ClientIDLabel";
+            this.ClientIDLabel.Size = new System.Drawing.Size(47, 13);
+            this.ClientIDLabel.TabIndex = 8;
+            this.ClientIDLabel.Text = "Client ID";
+            this.ClientIDLabel.Visible = false;
+            // 
+            // STRadioButton
+            // 
+            this.STRadioButton.AutoSize = true;
+            this.STRadioButton.Location = new System.Drawing.Point(99, 31);
+            this.STRadioButton.Name = "STRadioButton";
+            this.STRadioButton.Size = new System.Drawing.Size(73, 17);
+            this.STRadioButton.TabIndex = 7;
+            this.STRadioButton.Text = "StreamTip";
+            this.STRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // TARadioButton
+            // 
+            this.TARadioButton.AutoSize = true;
+            this.TARadioButton.Checked = true;
+            this.TARadioButton.Location = new System.Drawing.Point(10, 31);
+            this.TARadioButton.Name = "TARadioButton";
+            this.TARadioButton.Size = new System.Drawing.Size(83, 17);
+            this.TARadioButton.TabIndex = 6;
+            this.TARadioButton.TabStop = true;
+            this.TARadioButton.Text = "TwitchAlerts";
+            this.TARadioButton.UseVisualStyleBackColor = true;
+            this.TARadioButton.CheckedChanged += new System.EventHandler(this.TARadioButton_CheckedChanged);
+            // 
+            // APILabel
+            // 
+            this.APILabel.AutoSize = true;
+            this.APILabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.APILabel.Location = new System.Drawing.Point(9, 11);
+            this.APILabel.Name = "APILabel";
+            this.APILabel.Size = new System.Drawing.Size(24, 13);
+            this.APILabel.TabIndex = 5;
+            this.APILabel.Text = "API";
+            // 
+            // AccessTokenBox
+            // 
+            this.AccessTokenBox.Location = new System.Drawing.Point(10, 67);
+            this.AccessTokenBox.Name = "AccessTokenBox";
+            this.AccessTokenBox.PasswordChar = '●';
+            this.AccessTokenBox.Size = new System.Drawing.Size(268, 20);
+            this.AccessTokenBox.TabIndex = 3;
             // 
             // TAAccessTokenLabel
             // 
             this.TAAccessTokenLabel.AutoSize = true;
             this.TAAccessTokenLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TAAccessTokenLabel.Location = new System.Drawing.Point(7, 7);
+            this.TAAccessTokenLabel.Location = new System.Drawing.Point(7, 51);
             this.TAAccessTokenLabel.Name = "TAAccessTokenLabel";
             this.TAAccessTokenLabel.Size = new System.Drawing.Size(76, 13);
             this.TAAccessTokenLabel.TabIndex = 2;
@@ -451,6 +513,17 @@
             this.tabPage5.TabIndex = 0;
             this.tabPage5.Text = "General";
             this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // updateLabel
+            // 
+            this.updateLabel.AutoSize = true;
+            this.updateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.updateLabel.Location = new System.Drawing.Point(190, 8);
+            this.updateLabel.Name = "updateLabel";
+            this.updateLabel.Size = new System.Drawing.Size(164, 13);
+            this.updateLabel.TabIndex = 31;
+            this.updateLabel.Text = "PLEASE UPDATE PROFILE";
+            this.updateLabel.Visible = false;
             // 
             // deleteMovieProfileBtn
             // 
@@ -847,17 +920,6 @@
             this.hostBtn.UseVisualStyleBackColor = true;
             this.hostBtn.Click += new System.EventHandler(this.hostBtn_Click);
             // 
-            // updateLabel
-            // 
-            this.updateLabel.AutoSize = true;
-            this.updateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.updateLabel.Location = new System.Drawing.Point(190, 8);
-            this.updateLabel.Name = "updateLabel";
-            this.updateLabel.Size = new System.Drawing.Size(164, 13);
-            this.updateLabel.TabIndex = 31;
-            this.updateLabel.Text = "PLEASE UPDATE PROFILE";
-            this.updateLabel.Visible = false;
-            // 
             // ConfigurationWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -906,7 +968,7 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage3;
-        internal System.Windows.Forms.TextBox TAAccessTokenBox;
+        internal System.Windows.Forms.TextBox AccessTokenBox;
         private System.Windows.Forms.Label TAAccessTokenLabel;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabControl tabControl2;
@@ -969,6 +1031,10 @@
         private System.Windows.Forms.Button renameMovieProfileBtn;
         private System.Windows.Forms.LinkLabel linkIrcGetOAuth;
         private System.Windows.Forms.Label updateLabel;
-
+        private System.Windows.Forms.Label APILabel;
+        private System.Windows.Forms.Label ClientIDLabel;
+        internal System.Windows.Forms.TextBox ClientIDBox;
+        internal System.Windows.Forms.RadioButton STRadioButton;
+        internal System.Windows.Forms.RadioButton TARadioButton;
     }
 }
