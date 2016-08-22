@@ -24,7 +24,8 @@ namespace Twitchdouken
         private string movieProfileFilePath;
 
         private bool initialized;
-        private bool multiMonthTest= false;
+        private bool multiMonthTest = false;
+        private bool donationSizeTest = false;
 
         public ConfigurationWindow(Twitchdouken parent, AlertWindow alertWindow)
         {
@@ -281,17 +282,30 @@ namespace Twitchdouken
 
         private void testDonationBtn_Click(object sender, EventArgs e)
         {
-            parent.playDonation("Domalix", "$5");
+            if (donationSizeTest)
+                parent.playDonation("Striker", "5");
+            else
+                parent.playDonation("Striker", "10");
+            donationSizeTest = !donationSizeTest;
+
+
         }
 
         private void testSubscriberBtn_Click(object sender, EventArgs e)
         {
-            if (multiMonthTest)
-                parent.playSubscriber("Zuludian", "45");
-            else
-                parent.playSubscriber("Zuludian", "0");
-            multiMonthTest = !multiMonthTest;
-              
+            SubTestForm testDialog = new SubTestForm();
+            string sub_name = "";
+            string sub_months = "";
+            // Show testDialog as a modal dialog and determine if DialogResult = OK.
+            if (testDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                // Read the contents of testDialog's TextBox.
+                sub_name = testDialog.subnameTxtBox.Text;
+                sub_months = testDialog.monthTxtBox.Text;
+                parent.playSubscriber(sub_name, sub_months);
+            }
+            testDialog.Dispose();
+     
         }
         // ALL CODE FOR CONTROLS ABOVE THIS LINE
 
@@ -374,7 +388,10 @@ namespace Twitchdouken
             {
                 twitch_alert_config = new
                 {
-                    ta_access_token = TAAccessTokenBox.Text
+                    ta_access_token = AccessTokenBox.Text,
+                    client_id = ClientIDBox.Text,
+                    ta_checked = TARadioButton.Checked,
+                    st_checked = STRadioButton.Checked
                 }
             });
             return config;
@@ -409,8 +426,6 @@ namespace Twitchdouken
 
                     JToken token = JObject.Parse(json);
 
-                    // JToken token = JObject.Parse(data);
-
                     followerBox.Checked = (bool)token["general_config"]["play_followers"];
                     subscriberBox.Checked = (bool)token["general_config"]["play_subscribers"];
                     donationBox.Checked = (bool)token["general_config"]["play_donations"];
@@ -421,7 +436,10 @@ namespace Twitchdouken
                     ircOAuthBox.Text = (string)token["twitch_config"]["irc_oauth"];
                     subscriberOAuthBox.Text = (string)token["twitch_config"]["subscriber_oauth"];
 
-                    TAAccessTokenBox.Text = (string)token["twitch_alert_config"]["ta_access_token"];
+                    AccessTokenBox.Text = (string)token["twitch_alert_config"]["ta_access_token"];
+                    ClientIDBox.Text = (string)token["twitch_alert_config"]["client_id"];
+                    TARadioButton.Checked = (bool)token["twitch_alert_config"]["ta_checked"];
+                    STRadioButton.Checked = (bool)token["twitch_alert_config"]["st_checked"];
                 }
 
                 initialized = true;
@@ -668,6 +686,20 @@ namespace Twitchdouken
             }
 
             MessageBox.Show(null, "All movie profiles have been successfully saved.", "Movie Profiles", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void TARadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (TARadioButton.Checked)
+            {
+                ClientIDBox.Visible = false;
+                ClientIDLabel.Visible = false;
+            }
+            else
+            {
+                ClientIDBox.Visible = true;
+                ClientIDLabel.Visible = true;
+            }
         }
         // ALL CODE DEALING WITH MOVIE PROFILES ABOVE THIS LINE
     }

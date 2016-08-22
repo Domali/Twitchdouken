@@ -19,10 +19,11 @@ namespace Twitchdouken
 
         private TwitchAPIHelper         twitchHelper;
         private TwitchAlertAPIHelper    taHelper;
+        private StreamtipAPIHelper      stHelper;
         private TwitchIRCHelper         ircHelper;
 
         private Thread                  twitchAPIThread;
-        private Thread                  taThread;
+        private Thread                  donationThread;
 
         private bool                    running = false;
         private static string           flashXML = "<invoke name=\"{0}\" returntype=\"xml\"><arguments><string>{1}</string></arguments></invoke>";
@@ -73,6 +74,26 @@ namespace Twitchdouken
             playFlash(configWindow.donationTxtBox.Text, function_calls);
         }
 
+        internal void startDonationTracker()
+        {
+            taHelper = new TwitchAlertAPIHelper(configWindow.AccessTokenBox.Text);
+            stHelper = new StreamtipAPIHelper(configWindow.AccessTokenBox.Text, configWindow.ClientIDBox.Text);
+
+            if (configWindow.TARadioButton.Checked)
+            {
+                donationThread = new Thread(taHelper.runAsThread);
+            }
+            else if(configWindow.STRadioButton.Checked)
+            {   
+                donationThread = new Thread(stHelper.runAsThread);
+            }
+
+            donationThread.IsBackground = true;
+            if (configWindow.donationBox.Checked)
+                donationThread.Start();
+        }
+
+
         internal void playFlash(string fileName, List<string> functionCalls)
         {
             if (fileName != string.Empty)
@@ -102,7 +123,7 @@ namespace Twitchdouken
             {
                 checkAndPlayAlerts();
             }
-            else if (!taThread.IsAlive && !twitchAPIThread.IsAlive) 
+            else if (!donationThread.IsAlive && !twitchAPIThread.IsAlive) 
             {
                 // Once the two threads are joined after a stop we have to finish killing everything
                 // This is done in the timer so that we don't get an unresponsive GUI.
@@ -141,12 +162,21 @@ namespace Twitchdouken
                     playSubscriber(subscriber.name, subscriber.months);
                     subscriberBox.Items.Insert(0, subscriber.name + " (" + subscriber.months + ")");
                 }
-                // donation
-                else if (taHelper.newDonationCheck() && configWindow.donationBox.Checked)
+                // donation TwitchAlerts
+                else if (configWindow.TARadioButton.Checked && taHelper.newDonationCheck() && configWindow.donationBox.Checked)
                 {
                     Donation donation = taHelper.getDonation();
 
-                    playDonation(donation.name, "$" + donation.amount);
+                    playDonation(donation.name, donation.amount);
+                    donationBox.Items.Insert(0, donation);
+                    donationBox.SetSelected(0, true);
+                }
+                //Donation Streamtips
+                else if (configWindow.STRadioButton.Checked && stHelper.newDonationCheck() && configWindow.donationBox.Checked)
+                {
+                    Donation donation = stHelper.getDonation();
+
+                    playDonation(donation.name, donation.amount);
                     donationBox.Items.Insert(0, donation);
                     donationBox.SetSelected(0, true);
                 }
@@ -191,13 +221,9 @@ namespace Twitchdouken
             {
                 twitchHelper = new TwitchAPIHelper(configWindow.channelBox.Text, configWindow.subscriberOAuthBox.Text);
                 ircHelper = new TwitchIRCHelper(configWindow.channelBox.Text.ToLower(), configWindow.ircOAuthBox.Text);
-                taHelper = new TwitchAlertAPIHelper(configWindow.TAAccessTokenBox.Text);
 
                 twitchAPIThread = new Thread(twitchHelper.runAsThread);
                 twitchAPIThread.IsBackground = true;
-
-                taThread = new Thread(taHelper.runAsThread);
-                taThread.IsBackground = true;
 
                 twitchHelper.updateFollowers = configWindow.followerBox.Checked;
                 twitchHelper.updateSubscribers = configWindow.subscriberBox.Checked;
@@ -208,11 +234,10 @@ namespace Twitchdouken
                 if (configWindow.subscriberBox.Checked || configWindow.followerBox.Checked)
                     twitchAPIThread.Start();
 
-                if (configWindow.donationBox.Checked)
-                    taThread.Start();
-
                 if (configWindow.hostBox.Checked || configWindow.subscriberBox.Checked)
                     TwitchIRCHelper.connectToIRC();
+
+                startDonationTracker();
 
                 UIUpdater.Enabled = true;
 
@@ -228,6 +253,7 @@ namespace Twitchdouken
 
                 twitchHelper.stopThread();
                 taHelper.stopThread();
+                stHelper.stopThread();
 
                 if (configWindow.hostBox.Checked)
                 {
@@ -241,7 +267,7 @@ namespace Twitchdouken
             configWindow.channelBox.ReadOnly = !configWindow.channelBox.ReadOnly;
             configWindow.ircOAuthBox.ReadOnly = !configWindow.ircOAuthBox.ReadOnly;
             configWindow.subscriberOAuthBox.ReadOnly = !configWindow.subscriberOAuthBox.ReadOnly;
-            configWindow.TAAccessTokenBox.ReadOnly = !configWindow.TAAccessTokenBox.ReadOnly;
+            configWindow.AccessTokenBox.ReadOnly = !configWindow.AccessTokenBox.ReadOnly;
             configWindow.subscriberBox.Enabled = !configWindow.subscriberBox.Enabled;
             configWindow.followerBox.Enabled = !configWindow.followerBox.Enabled;
             configWindow.hostBox.Enabled = !configWindow.hostBox.Enabled;
